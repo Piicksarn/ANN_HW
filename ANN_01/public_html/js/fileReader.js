@@ -9,60 +9,7 @@ var Database = function () {
     this.expecationLabel = new Array();// 儲存資料庫中期望值的種類
     this.maxData = 0;// 計算資料最大數字 方便作圖
     this.dataLineArray;
-    
-    
-    
-    
-    /*
-    //宣告資料陣列
-    var d1 = this.dataLineArray.length;//資料個數
-    var d2 = this.dataLineArray[0].length;//資料維度 + 期望值
-
-    //資料
-    this.data = new Array(d1);
-    for (var i = 0 ; i < d1 ; i++) {
-      this.data[i] = new Array(d2 - 1);
-    } 
-
-    // 期望
-    this.expecation = new Array(d1);
-
-    //讀取與儲存陣列
-    this.data = this.dataLineArray;
-    for (var i = 0 ; i < d1 ; i++)
-        this.data.splice(this.data.length - 1,1);
-    console.log("draw point "+this.data);
-    
-    
-    for (var i = 0 ; i < d1 ; i++) {
-        for (var j = 0 ; j < d2 - 1 ; j++) {
-            this.data[i] =  this.data[i]||{};//init database 解決database[0][0]  undefined problem
-            this.data[i][j] = i + j;            
-             if(this.maxData < this.data[i][j])
-                 this.maxData = this.data[i][j];
-        }
-                
-        if(i == 0) {
-            this.expecation[0] = 0;
-            this.expecationLabel.push(this.expecation[0]);
-        }
-        else
-            this.expecation[i] = 1;
-        
-        var t = this.expecationLabel.indexOf(this.expecation[i]);
-        if(t == -1)
-            this.expecationLabel.push(this.expecation[i]);
-    
-        
-        console.log("draw point"+this.data[i]);
-        console.log("draw point expecation"+this.expecation[i]);
-        
-    }
-    */
-
-    //console.log("draw point expecLabel"+this.expecationLabel);
-    
-        
+            
 };
 
 Database.prototype = {

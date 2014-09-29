@@ -9,15 +9,9 @@ var Database = function () {
     this.expecationLabel = new Array();// 儲存資料庫中期望值的種類
     this.maxData = 0;// 計算資料最大數字 方便作圖
     this.dataLineArray;
-            
 };
 
 Database.prototype = {
-    data: '',
-    expecation: '',
-    expecationLabel:'',
-    maxData: '',
-    dataLineArray: '',
     readTextFile: function(file){
         var allText;
     

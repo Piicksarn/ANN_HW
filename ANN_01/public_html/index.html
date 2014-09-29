@@ -12,7 +12,7 @@ and open the template in the editor.
         <link rel="stylesheet" type="text/css" href="css/drawer/drawer.css">
         <link rel="stylesheet" href="//rawgithub.com/blivesta/ashiba/master/archive/0.3.1/css/ashiba.min.css">
         <link href="css/bootstrap/bootstrap.css" rel="stylesheet">
-        <link href="css/bootstrap/bootstrap-switch.css" rel="stylesheet">
+        <!--<link href="css/bootstrap/bootstrap-switch.css" rel="stylesheet">-->
         <style>
             .site-masthead {
             background-color: #272727;
@@ -30,7 +30,7 @@ and open the template in the editor.
         <script src="js/libs/bootstrap/button.js"></script>
         <script src="js/libs/bootstrap/bootstrap.js"></script>
         <script type="text/javascript" src="js/libs/bootstrap/bootstrap-progressbar.js"></script>
-        <script src="js/libs/bootstrap/bootstrap-switch.js"></script>
+        <!--<script src="js/libs/bootstrap/bootstrap-switch.js"></script>-->
         
         
         
@@ -41,6 +41,26 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <script>
             
+            var chengeClass = function(valClass) {
+              switch(valClass) {
+                case 'drawer-left':
+                  $("#drawer").removeClass("drawer-right drawer-responsive").addClass(valClass).drawer("open");
+                  $('.js-trigger').attr('disabled', false);
+                break;
+                case 'drawer-right':
+                  $("#drawer").removeClass("drawer-left drawer-responsive").addClass(valClass).drawer("open");
+                  $('.js-trigger').attr('disabled', false);
+                break;
+                case 'drawer-left drawer-responsive':
+                  $("#drawer").removeClass("drawer-right drawer-open").addClass(valClass).drawer("resize");
+                  $('.js-trigger').attr('disabled', true);
+                break;
+                case 'drawer-right drawer-responsive':
+                  $("#drawer").removeClass("drawer-left drawer-open").addClass(valClass).drawer("resize");
+                  $('.js-trigger').attr('disabled', true);
+              }
+            };
+
             $(document).ready(function(){
 
               $('#drawer').drawer();
@@ -68,12 +88,125 @@ and open the template in the editor.
                 $("#drawer").drawer("close");                
             };
             pb = function(){
-                $pb = $('#h-fill-basic .progress-bar');
-                $pb.attr('data-transitiongoal', Math.floor(neuron.n / (neuron.true_loop_times/100))); // 做一下正規化
-                $pb.progressbar({display_text: 'fill'});
+                var barvalue = $('#h-fill-basic .progress-bar').attr('data-transitiongoal');
+                if(barvalue != Math.floor(neuron.n / (neuron.true_loop_times/100))) {
+                    $pb = $('#h-fill-basic .progress-bar');
+                    $pb.attr('data-transitiongoal', Math.floor(neuron.n / (neuron.true_loop_times/100))); // 做一下正規化
+                    $pb.progressbar({display_text: 'fill'});
+                    console.log($('#h-fill-basic .progress-bar').attr('data-transitiongoal'));
+                }
             };
+            // 使用者設定的開關
+            setControler = function(e){
+                $('#learning_times').attr("disabled", !e);
+                $('#learning_rate').attr("disabled", !e);
+                $('#fps').attr("disabled", !e);
+                $('#animation').attr("disabled", !e);
+                $('#auto_training').attr("disabled", !e);
+                $('input[type="checkbox"][name="checkbox2"]').attr("disabled", !e);
+                $('input[type="checkbox"][name="checkbox2"]').attr("disabled", !e);
+            };
+            $(document).ready(function(){
+                // 開關自動訓練的按鈕控制
+                $('input[type="checkbox"][name="checkbox"]').change(function () {                    
+                    if ($('input[type="checkbox"][name="checkbox"]').is(':checked')) { // Enable Auto Training 
+                        $('input[type="checkbox"][name="checkbox"]').addClass('checked');
+//                        $('#learning_times').attr("disabled", true);
+//                        $('#learning_rate').attr("disabled", true);
+//                        $('#fps').attr("disabled", true);
+                        $('#user_control').css('display','none');
+                        $('#auto_control').css('display','block');
+                        $('#pause').attr("disabled", true);
+                        
+                        // 將Animation打勾
+                        enableAnimation = true;
+                        $('input[type="checkbox"][name="checkbox2"]').prop('checked', true);
+                        $('input[type="checkbox"][name="checkbox2"]').addClass('checked');
+                        $('input[type="checkbox"][name="checkbox2"]').attr("disabled", false);
+                        $('#animation').attr("disabled", false);
+                        
+                    } else {// Disable  Auto Training 
+                        $('input[type="checkbox"][name="checkbox"]').removeClass('checked');
+//                        $('#learning_times').attr("disabled", false);
+//                        $('#learning_rate').attr("disabled", false);
+//                        $('#fps').attr("disabled", false);
+                        $('#user_control').css('display','block');
+                        $('#auto_control').css('display','none');
+                        
+                        // 將Animation打勾
+                        enableAnimation = true;
+                        $('input[type="checkbox"][name="checkbox2"]').prop('checked', true);
+                        $('input[type="checkbox"][name="checkbox2"]').addClass('checked');
+                        $('input[type="checkbox"][name="checkbox2"]').attr("disabled", true);
+                        $('#animation').attr("disabled", true);
+                        
+                    }
+                });
+                $('#auto_training').click(function(){
+                     if ($('input[type="checkbox"][name="checkbox"]').is(':checked')) { // Disable  Auto Training 
+                        $('input[type="checkbox"][name="checkbox"]').prop('checked', false);
+                        $('input[type="checkbox"][name="checkbox"]').removeClass('checked');
+//                        $('#learning_times').attr("disabled", false);
+//                        $('#learning_rate').attr("disabled", false);
+//                        $('#fps').attr("disabled", false);
+                        $('#user_control').css('display','block');
+                        $('#auto_control').css('display','none');
+                        
+                        // 將Animation打勾
+                        enableAnimation = true;
+                        $('input[type="checkbox"][name="checkbox2"]').prop('checked', true);
+                        $('input[type="checkbox"][name="checkbox2"]').addClass('checked');
+                        $('input[type="checkbox"][name="checkbox2"]').attr("disabled", true);
+                        $('#animation').attr("disabled", true);
+                    } else {// Enable  Auto Training  
+                        $('input[type="checkbox"][name="checkbox"]').prop('checked', true);
+                        $('input[type="checkbox"][name="checkbox"]').addClass('checked');
+//                        $('#learning_times').attr("disabled", true);
+//                        $('#learning_rate').attr("disabled", true);
+//                        $('#fps').attr("disabled", true);
+                        $('#user_control').css('display','none');
+                        $('#auto_control').css('display','block');
+                        $('#pause').attr("disabled", true);
+                        
+                        // 將Animation打勾
+                        enableAnimation = true;
+                        $('input[type="checkbox"][name="checkbox2"]').prop('checked', true);
+                        $('input[type="checkbox"][name="checkbox2"]').addClass('checked');
+                        $('input[type="checkbox"][name="checkbox2"]').attr("disabled", false);
+                        $('#animation').attr("disabled", false);
+
+                    }
+                    
+                });
+                
+                // 開關動畫的按鈕控制
+                $('input[type="checkbox"][name="checkbox2"]').change(function () {                    
+                    if ($('input[type="checkbox"][name="checkbox2"]').is(':checked')) { // Enable Animation 
+                        $('input[type="checkbox"][name="checkbox2"]').addClass('checked');
+                        enableAnimation = true;
+                        
+                    } else {// Disable Animation
+                        $('input[type="checkbox"][name="checkbox2"]').removeClass('checked');
+                        enableAnimation = false;
+                        
+                    }
+                });
+                $('#animation').click(function(){
+                     if ($('input[type="checkbox"][name="checkbox2"]').is(':checked')) { // Disable Animation
+                        $('input[type="checkbox"][name="checkbox2"]').prop('checked', false);
+                        $('input[type="checkbox"][name="checkbox2"]').removeClass('checked');
+                        enableAnimation = false;
+                    } else {// Enable Animation 
+                        $('input[type="checkbox"][name="checkbox2"]').prop('checked', true);
+                        $('input[type="checkbox"][name="checkbox2"]').addClass('checked');
+                        enableAnimation = true;
+                    }
+                    
+                });
+                
+                
+            });
             
-            $("[name='my-checkbox']").bootstrapSwitch();
         </script>
         
     </head>
@@ -95,8 +228,9 @@ and open the template in the editor.
             <ul class="nav drawer-nav-list">
               <li><a>Learning Times<input type="text" id="learning_times" placeholder="20" class="form-control" value="20"></a></li>
               <li><a>Learning Rate<input type="text" id="learning_rate" placeholder="0.8" class="form-control" value="0.8"></a></li>
-              <li><a id="animation_name">Animation<input type="checkbox" name="my-checkbox" checked></a></li>
-              <li><a id="animation_name">FPS:<input type="text" id="fps" placeholder="3" class="form-control" value="3"></a></li>
+              <li><a id="auto_training">Auto Training  <input type="checkbox" name="checkbox" class="checkbox" checked="checked"/></a></li>
+              <li><a id="animation">Animation  <input type="checkbox" name="checkbox2" class="checkbox" checked="checked"/></a></li>
+              <li><a id="setfps">FPS:<input type="text" id="fps" placeholder="3" class="form-control" value="3"></a></li>
               <hr/>
               <div class="drawer-brand">
                 <h3 style="color:white">2-D, 2-Class</h3>
@@ -143,10 +277,14 @@ and open the template in the editor.
                     </script>
                     
                     <hr/>
-                    <form>
-                    <button type="button" id="previous" class="btn btn-primary">Previous</button>
-                    <button type="button" id="next" class="btn btn-primary">Next</button>
-                    </form>
+                    <div id="user_control" style="display: none;">
+                        <button type="button" id="previous" class="btn btn-success">Previous</button>
+                        <button type="button" id="next" class="btn btn-success">Next</button>
+                    </div>
+                    <div id="auto_control">
+                        <button type="button" id="pause" class="btn btn-primary">Pause</button>
+                        <button type="button" id="play" class="btn btn-primary">Play</button>
+                    </div>
                     <hr/>
                     <!--
                     http://www.minddust.com/project/bootstrap-progressbar/demo/bootstrap-3-2-0/
@@ -159,18 +297,52 @@ and open the template in the editor.
                                 </div>
                                 <script type='text/javascript'>
                                     $(document).ready(function() {
+                                        $('#play').val("Play");
                                         $('#next').click(function() {
                                             var n = neuron.Learning(1);
                                             pb();
-//                                            $pb = $('#h-fill-basic .progress-bar');
-//                                            $pb.attr('data-transitiongoal', n);
-//                                            $pb.progressbar({display_text: 'fill'});
                                         });
-                                        $('#previous').click(function() {
+                                        $('#previous').click(function() { 
                                             var n = neuron.Learning(0);
-//                                            $pb = $('#h-fill-basic .progress-bar');
-//                                            $pb.attr('data-transitiongoal', n);
-//                                            $pb.progressbar({display_text: 'fill'});
+                                        });
+                                        $('#play').click(function() {
+                                            if($('#play').val() == 'Play') {
+                                                console.log("play click");
+                                                neuron.auto_control = true;
+                                                neuron.startAnimation();
+                                                $('#pause').attr("disabled", false);
+                                                $('#play').val("Stop");
+                                                $('#play').text('Stop').button("refresh");
+                                                AnimationStatus = Status.Start;
+                                                setControler(false); // 關閉使用者設定
+                                                
+                                                 if(AnimationStatus != Status.Stop) {
+                                                     neuron.learning_rate = $("#learning_rate").val();
+                                                     neuron.setLearningTimes($("#learning_times").val());
+                                                     if(enableAnimation)
+                                                        neuron.fps = $("#fps").val();
+                                                    else
+                                                        neuron.fps = 10000;
+                                                 }
+                                                
+                                            }
+                                            else {
+                                                console.log("stop click");
+                                                neuron.stopAnimation();
+                                                $('#pause').attr("disabled", true);
+                                                $('#play').val("Play");
+                                                $('#play').text('Play').button("refresh");
+                                                AnimationStatus = Status.Stop;
+                                                setControler(true); // 開啟使用者設定
+                                            }
+                                        });
+                                        $('#pause').click(function() {
+                                            neuron.auto_control = false;
+                                            $('#pause').attr("disabled", true);
+                                            $('#play').attr("disabled", false);
+                                            $('#play').val("Play");
+                                            $('#play').text('Play').button("refresh");
+                                            AnimationStatus = Status.Pause;
                                         });
                                         $('#h-fill-basic-reset').click(function() {
                                             $('#h-fill-basic .progress-bar').attr('data-transitiongoal', 0).progressbar({display_text: 'fill'});
@@ -181,7 +353,14 @@ and open the template in the editor.
                         </div>
                     </div>
 
-
+                    <!--
+                    <div ng-controller="ProgressDemoCtrl">
+                        <hr />
+                        <h3>Dynamic <button class="btn btn-sm btn-primary" type="button" ng-click="random(100)">Randomize</button></h3>
+                        <progressbar max="max" value="dynamic"><span style="color:black; white-space:nowrap;">{{dynamic}} / {{max}}</span></progressbar>
+                    
+                    </div>
+                    -->
                     
                 </div><!-- /.container -->
   
@@ -238,109 +417,119 @@ and open the template in the editor.
         var path;
         var text = $("#filename");        
         var init = function(select) {
-            switch(select){
-                case 0: // 2Ccircle1(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/2Ccircle1.txt";
-                    $("#filename").text('2Ccircle1(2D 2Class)');
-                    break;
-                case 1: // 2Circle1(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/2Circle1.txt";
-                    $("#filename").text('2Circle1(2D 2Class)');
-                    break;
-                case 2: // 2class(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/2class.txt";
-                    $("#filename").text('2class(2D 2Class)');
-                    break;
-                case 3: // 2CloseS2(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/2CloseS2.txt";
-                    $("#filename").text('2CloseS2(2D 2Class)');
-                    break;
-                case 4: // 2CloseS3(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/2CloseS3.txt";
-                    $("#filename").text('2CloseS3(2D 2Class)');
-                    break;
-                case 5: // 2CloseS(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/2CloseS.txt";
-                    $("#filename").text('2CloseS(2D 2Class)');
-                    break;
-                case 6: // 2cring(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/2cring.txt";
-                    $("#filename").text('2cring(2D 2Class)');
-                    break;
-                case 7: // 2CS(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/2CS.txt";
-                    $("#filename").text('2CS(2D 2Class)');
-                    break;
-                case 8: // 2Hcircle1(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/2Hcircle1.txt";
-                    $("#filename").text('2Hcircle1(2D 2Class)');
-                    break;
-                case 9: // 2ring(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/2ring.txt";
-                    $("#filename").text('2ring(2D 2Class)');
-                    break;
-                case 10: // 5CloseS1(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/5CloseS1.txt";
-                    $("#filename").text('5CloseS1(2D 2Class)');
-                    break;
-                case 11: // xor(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/xor.txt";
-                    $("#filename").text('xor(2D 2Class)');
-                    break;
-                case 12: // 感知機1(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/%E6%84%9F%E7%9F%A5%E6%A9%9F1.txt";
-                    $("#filename").text('感知機1(2D 2Class)');
-                    break;
-                case 13: // 感知機2(2D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/%E6%84%9F%E7%9F%A5%E6%A9%9F2.txt";
-                    $("#filename").text('感知機2(2D 2Class)');
-                    break;
-                case 14: // 2Circle2(2D 3Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/2Circle2.txt";
-                    $("#filename").text('2Circle2(2D 3Class)');
-                    break;
-                case 15: // 8OX(8D 3Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/8OX.TXT";
-                    $("#filename").text('8OX(8D 3Class)');
-                    break;
-                case 16: // C10D(10D 4Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/C10D.TXT";
-                    $("#filename").text('C10D(10D 4Class)');
-                    break;
-                case 17: // C3D(3D 4Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/C3D.TXT";
-                    $("#filename").text('C3D(3D 4Class)');
-                    break;
-                case 18: // IRIS(4D 3Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/IRIS.TXT";
-                    $("#filename").text('IRIS(4D 3Class)');
-                    break;
-                case 19: // wine(13D 3Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/wine.txt";
-                    $("#filename").text('wine(13D 3Class)');
-                    break;
-                case 20: // 感知機3(3D 2Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/%E6%84%9F%E7%9F%A5%E6%A9%9F3.txt";
-                    $("#filename").text('感知機3(3D 2Class)');
-                    break;
-                case 21: // 感知機4(2D 3Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/%E6%84%9F%E7%9F%A5%E6%A9%9F4.txt";
-                    $("#filename").text('感知機4(2D 3Class)');
-                    break;
-                case 22: // 衛星6類_4維(4D 6Class)
-                    path = "https://dl.dropboxusercontent.com/u/43345624/data/%E8%A1%9B%E6%98%9F6%E9%A1%9E_4%E7%B6%AD.txt";
-                    $("#filename").text('衛星6類_4維(4D 6Class)');
-                    break;                    
+            if(AnimationStatus != Status.Start) {
+                switch(select){
+                    case 0: // 2Ccircle1(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/2Ccircle1.txt";
+                        $("#filename").text('2Ccircle1(2D 2Class)');
+                        break;
+                    case 1: // 2Circle1(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/2Circle1.txt";
+                        $("#filename").text('2Circle1(2D 2Class)');
+                        break;
+                    case 2: // 2class(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/2class.txt";
+                        $("#filename").text('2class(2D 2Class)');
+                        break;
+                    case 3: // 2CloseS2(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/2CloseS2.txt";
+                        $("#filename").text('2CloseS2(2D 2Class)');
+                        break;
+                    case 4: // 2CloseS3(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/2CloseS3.txt";
+                        $("#filename").text('2CloseS3(2D 2Class)');
+                        break;
+                    case 5: // 2CloseS(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/2CloseS.txt";
+                        $("#filename").text('2CloseS(2D 2Class)');
+                        break;
+                    case 6: // 2cring(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/2cring.txt";
+                        $("#filename").text('2cring(2D 2Class)');
+                        break;
+                    case 7: // 2CS(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/2CS.txt";
+                        $("#filename").text('2CS(2D 2Class)');
+                        break;
+                    case 8: // 2Hcircle1(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/2Hcircle1.txt";
+                        $("#filename").text('2Hcircle1(2D 2Class)');
+                        break;
+                    case 9: // 2ring(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/2ring.txt";
+                        $("#filename").text('2ring(2D 2Class)');
+                        break;
+                    case 10: // 5CloseS1(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/5CloseS1.txt";
+                        $("#filename").text('5CloseS1(2D 2Class)');
+                        break;
+                    case 11: // xor(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/xor.txt";
+                        $("#filename").text('xor(2D 2Class)');
+                        break;
+                    case 12: // 感知機1(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/%E6%84%9F%E7%9F%A5%E6%A9%9F1.txt";
+                        $("#filename").text('感知機1(2D 2Class)');
+                        break;
+                    case 13: // 感知機2(2D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/%E6%84%9F%E7%9F%A5%E6%A9%9F2.txt";
+                        $("#filename").text('感知機2(2D 2Class)');
+                        break;
+                    case 14: // 2Circle2(2D 3Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/2Circle2.txt";
+                        $("#filename").text('2Circle2(2D 3Class)');
+                        break;
+                    case 15: // 8OX(8D 3Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/8OX.TXT";
+                        $("#filename").text('8OX(8D 3Class)');
+                        break;
+                    case 16: // C10D(10D 4Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/C10D.TXT";
+                        $("#filename").text('C10D(10D 4Class)');
+                        break;
+                    case 17: // C3D(3D 4Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/C3D.TXT";
+                        $("#filename").text('C3D(3D 4Class)');
+                        break;
+                    case 18: // IRIS(4D 3Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/IRIS.TXT";
+                        $("#filename").text('IRIS(4D 3Class)');
+                        break;
+                    case 19: // wine(13D 3Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/wine.txt";
+                        $("#filename").text('wine(13D 3Class)');
+                        break;
+                    case 20: // 感知機3(3D 2Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/%E6%84%9F%E7%9F%A5%E6%A9%9F3.txt";
+                        $("#filename").text('感知機3(3D 2Class)');
+                        break;
+                    case 21: // 感知機4(2D 3Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/%E6%84%9F%E7%9F%A5%E6%A9%9F4.txt";
+                        $("#filename").text('感知機4(2D 3Class)');
+                        break;
+                    case 22: // 衛星6類_4維(4D 6Class)
+                        path = "https://dl.dropboxusercontent.com/u/43345624/data/%E8%A1%9B%E6%98%9F6%E9%A1%9E_4%E7%B6%AD.txt";
+                        $("#filename").text('衛星6類_4維(4D 6Class)');
+                        break;                    
+                }
+                if(neuron != null)
+                    neuron = null;
+                if(database != null)
+                    database = null;
+
+                database = new Database();   
+                database.readTextFile(path);
+                
+                if(enableAnimation)
+                    neuron = new Neuron(database,$("#learning_rate").val(),$("#learning_times").val(),$("#fps").val());
+                else // 不開動畫就加速
+                    neuron = new Neuron(database,$("#learning_rate").val(),$("#learning_times").val(),10000);
+                closeDrawer();
             }
-            if(neuron != null)
-                neuron = null;
-            if(database != null)
-                database = null;
-            
-            database = new Database();   
-            database.readTextFile(path);
-            neuron = new Neuron(database,$("#learning_rate").val(),$("#learning_times").val(),$("#fps").val());
-            closeDrawer();
+            else{
+                alert("目前動畫正在運行中，請點擊 Stop 停止後再重新做設定！");
+                closeDrawer();
+            }
         };
                         
         //var database = new Database();   

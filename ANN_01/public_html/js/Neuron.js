@@ -12,6 +12,8 @@ var Neuron = function (database,learning_rate,learning_times,fps) {
     this.learning_rate = learning_rate;
     this.learning_times = learning_times;// 學習次數 = 回圈次數 / 資料數 -。 學習一次要跑全部的資料
     this.true_loop_times = this.learning_times * this.data.length;
+    this.auto_control = true;
+    this.fps = fps;
     
     this.weight = [];
     //for(var i = 0;i < this.n + 1;i++)
@@ -22,9 +24,20 @@ var Neuron = function (database,learning_rate,learning_times,fps) {
     this.expecationLabel = database.expecationLabel;// 儲存資料庫中期望值的種類
     
     this.mDrawer = new Drawer(database);//draw(database);
-    //this.mDrawer.drawPoint();
     //w1 x + w2 y + w0 = 0  ->  y = -(w1 / w2)x + -(w0 / w2)    //w0 = -1
-    this.mDrawer.drawFunc('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')' );   
+//    this.mDrawer.drawPoint();
+
+    //等database...不同步有點煩
+    function wait () {
+            setTimeout(function () {
+                neuron.mDrawer.drawPoint();
+                neuron.mDrawer.drawFunc('-1*('+neuron.weight[neuron.n][1].toString()+'/'+neuron.weight[neuron.n][2].toString()+')*x+('+neuron.weight[neuron.n][0].toString()+'/'+neuron.weight[neuron.n][2].toString()+')' );   
+             
+            }, 500);
+        }
+        
+   wait();
+
     console.log('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')');
     
     this.Multiplication = function (d,w) { // 矩陣相乘 d  要補 -1
@@ -60,17 +73,7 @@ var Neuron = function (database,learning_rate,learning_times,fps) {
         }
         
     };
-    
-    function myLoop (n,t) {           //  create a loop function
-        setTimeout(function () {    //  call a 3s setTimeout when the loop is called
-            neuron.Learning(1);                         //  increment the counter
-           if (neuron.n < t) {            //  if the counter < 10, call the loop function
-              myLoop(n,t);             //  ..  again which will trigger another 
-           }                        //  ..  setTimeout()
-        }, 1000.0/fps);
-    }
-    
-    myLoop(this.n,this.true_loop_times);
+
     /*
     for(var a = 0;a < 2;a++){
         this.Learning(1);
@@ -133,17 +136,56 @@ Neuron.prototype = {
                         break;
                         
                 }
+                
                 this.n++;
-                
-                this.mDrawer.clearFunc();
-                this.mDrawer.drawCircle(this.data[this.dataStep]);
-                this.mDrawer.drawFunc('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')' );   
-                console.log('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')');
-                
+                if(enableAnimation) {
+                    this.mDrawer.clearFunc();
+                    this.mDrawer.drawCircle(this.data[this.dataStep]);
+                    this.mDrawer.drawFunc('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')' );   
+                    console.log('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')');
+                }
                 break;
         }
-                                    pb();
+        pb(); // 更新進度條
         return this.n;
+    },
+    startAnimation: function (c) {
+        function myLoop (n,t) {           //  create a loop function
+            setTimeout(function () {    //  call a 3s setTimeout when the loop is called
+                                         //  increment the counter
+               if (neuron.n < t) {            //  if the counter < 10, call the loop function
+                  
+                    if(neuron.auto_control) {   // 暫停控制用
+                        neuron.Learning(1);
+                        myLoop(n,t); 
+                    }                  //  ..  again which will trigger another 
+                    
+               }                        //  ..  setTimeout()
+               else if(!enableAnimation) { // 不開動畫要再最後一次畫上結果
+                    neuron.mDrawer.clearFunc();
+                    neuron.mDrawer.drawCircle(neuron.data[neuron.dataStep]);
+                    neuron.mDrawer.drawFunc('-1*('+neuron.weight[neuron.n][1].toString()+'/'+neuron.weight[neuron.n][2].toString()+')*x+('+neuron.weight[neuron.n][0].toString()+'/'+neuron.weight[neuron.n][2].toString()+')' );   
+                    //console.log('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')');
+                                   
+               }
+            }, 1000.0/neuron.fps);
+        }
+        myLoop(this.n,this.true_loop_times);        
+    
+    },
+    stopAnimation: function(){ // reinintialize!!
+        this.auto_control = false;
+        this.n = 0;
+        pb();
+        this.weight = this.weight.slice(0,1);
+        this.mDrawer.clearFunc();
+        this.mDrawer.drawFunc('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')' );   
+                console.log('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')');
+                
+    },
+    setLearningTimes: function(t){
+        t = this.learning_times;
+        this.true_loop_times = t * this.data.length;
     }
     
     

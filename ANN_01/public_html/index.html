@@ -10,7 +10,7 @@ and open the template in the editor.
         <title>ANN HW 01</title> 
         <link rel="stylesheet" type="text/css" href="css/jsxgraph/jsxgraph.css" />
         <link rel="stylesheet" type="text/css" href="css/drawer/drawer.css">
-        <link rel="stylesheet" href="//rawgithub.com/blivesta/ashiba/master/archive/0.3.1/css/ashiba.min.css">
+        <link rel="stylesheet" type="text/css" href="css/ashiba/ashiba.min.css">
         <link href="css/bootstrap/bootstrap.css" rel="stylesheet">
         <!--<link href="css/bootstrap/bootstrap-switch.css" rel="stylesheet">-->
         <style>
@@ -24,20 +24,21 @@ and open the template in the editor.
             }
         </style>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="js/libs/jquery/1.11.0/jquery.min.js"></script>
         <script type="text/javascript" src="js/libs/jsxgraph/loadjsxgraph.js"></script>
         <script src="js/libs/drawer/js/jquery.drawer.js"></script>
         <script src="js/libs/bootstrap/button.js"></script>
         <script src="js/libs/bootstrap/bootstrap.js"></script>
+        <script type="text/javascript" src="js/libs/mathjax/MathJax.js?config=TeX-AMS_HTML-full"></script>
         <script type="text/javascript" src="js/libs/bootstrap/bootstrap-progressbar.js"></script>
         <!--<script src="js/libs/bootstrap/bootstrap-switch.js"></script>-->
         
         
-        
+        <script type="text/javascript" src="js/configure.js"></script>
         <script type="text/javascript" src="js/Drawer.js"></script>
         <script type="text/javascript" src="js/fileReader.js"></script>
         <script type="text/javascript" src="js/Neuron.js"></script>
-        <script type="text/javascript" src="js/configure.js"></script>
+        
         <meta charset="UTF-8">
         <script>
             
@@ -96,24 +97,12 @@ and open the template in the editor.
                     console.log($('#h-fill-basic .progress-bar').attr('data-transitiongoal'));
                 }
             };
-            // 使用者設定的開關
-            setControler = function(e){
-                $('#learning_times').attr("disabled", !e);
-                $('#learning_rate').attr("disabled", !e);
-                $('#fps').attr("disabled", !e);
-                $('#animation').attr("disabled", !e);
-                $('#auto_training').attr("disabled", !e);
-                $('input[type="checkbox"][name="checkbox2"]').attr("disabled", !e);
-                $('input[type="checkbox"][name="checkbox2"]').attr("disabled", !e);
-            };
+
             $(document).ready(function(){
                 // 開關自動訓練的按鈕控制
                 $('input[type="checkbox"][name="checkbox"]').change(function () {                    
                     if ($('input[type="checkbox"][name="checkbox"]').is(':checked')) { // Enable Auto Training 
                         $('input[type="checkbox"][name="checkbox"]').addClass('checked');
-//                        $('#learning_times').attr("disabled", true);
-//                        $('#learning_rate').attr("disabled", true);
-//                        $('#fps').attr("disabled", true);
                         $('#user_control').css('display','none');
                         $('#auto_control').css('display','block');
                         $('#pause').attr("disabled", true);
@@ -127,9 +116,6 @@ and open the template in the editor.
                         
                     } else {// Disable  Auto Training 
                         $('input[type="checkbox"][name="checkbox"]').removeClass('checked');
-//                        $('#learning_times').attr("disabled", false);
-//                        $('#learning_rate').attr("disabled", false);
-//                        $('#fps').attr("disabled", false);
                         $('#user_control').css('display','block');
                         $('#auto_control').css('display','none');
                         
@@ -143,12 +129,10 @@ and open the template in the editor.
                     }
                 });
                 $('#auto_training').click(function(){
+                    if(AnimatiobStatus == Status.Stop) {
                      if ($('input[type="checkbox"][name="checkbox"]').is(':checked')) { // Disable  Auto Training 
                         $('input[type="checkbox"][name="checkbox"]').prop('checked', false);
                         $('input[type="checkbox"][name="checkbox"]').removeClass('checked');
-//                        $('#learning_times').attr("disabled", false);
-//                        $('#learning_rate').attr("disabled", false);
-//                        $('#fps').attr("disabled", false);
                         $('#user_control').css('display','block');
                         $('#auto_control').css('display','none');
                         
@@ -161,9 +145,6 @@ and open the template in the editor.
                     } else {// Enable  Auto Training  
                         $('input[type="checkbox"][name="checkbox"]').prop('checked', true);
                         $('input[type="checkbox"][name="checkbox"]').addClass('checked');
-//                        $('#learning_times').attr("disabled", true);
-//                        $('#learning_rate').attr("disabled", true);
-//                        $('#fps').attr("disabled", true);
                         $('#user_control').css('display','none');
                         $('#auto_control').css('display','block');
                         $('#pause').attr("disabled", true);
@@ -175,6 +156,7 @@ and open the template in the editor.
                         $('input[type="checkbox"][name="checkbox2"]').attr("disabled", false);
                         $('#animation').attr("disabled", false);
 
+                    }
                     }
                     
                 });
@@ -192,7 +174,8 @@ and open the template in the editor.
                     }
                 });
                 $('#animation').click(function(){
-                     if ($('input[type="checkbox"][name="checkbox2"]').is(':checked')) { // Disable Animation
+                    if(AnimationStatus == Status.Stop) {
+                    if ($('input[type="checkbox"][name="checkbox2"]').is(':checked')) { // Disable Animation
                         $('input[type="checkbox"][name="checkbox2"]').prop('checked', false);
                         $('input[type="checkbox"][name="checkbox2"]').removeClass('checked');
                         enableAnimation = false;
@@ -201,8 +184,10 @@ and open the template in the editor.
                         $('input[type="checkbox"][name="checkbox2"]').addClass('checked');
                         enableAnimation = true;
                     }
+                    }
                     
                 });
+                
                 
                 
             });
@@ -301,12 +286,14 @@ and open the template in the editor.
                                         $('#next').click(function() {
                                             var n = neuron.Learning(1);
                                             pb();
+                                            
                                         });
                                         $('#previous').click(function() { 
                                             var n = neuron.Learning(0);
                                         });
                                         $('#play').click(function() {
                                             if($('#play').val() == 'Play') {
+                                                $('#function').html('');
                                                 console.log("play click");
                                                 neuron.auto_control = true;
                                                 neuron.startAnimation();
@@ -314,16 +301,17 @@ and open the template in the editor.
                                                 $('#play').val("Stop");
                                                 $('#play').text('Stop').button("refresh");
                                                 AnimationStatus = Status.Start;
-                                                setControler(false); // 關閉使用者設定
+                                                disableControler(true); // 關閉使用者設定
                                                 
-                                                 if(AnimationStatus != Status.Stop) {
-                                                     neuron.learning_rate = $("#learning_rate").val();
-                                                     neuron.setLearningTimes($("#learning_times").val());
-                                                     if(enableAnimation)
-                                                        neuron.fps = $("#fps").val();
-                                                    else
-                                                        neuron.fps = 10000;
-                                                 }
+                                                if(AnimationStatus != Status.Stop) {
+                                                    neuron.learning_rate = $("#learning_rate").val();
+                                                    neuron.setLearningTimes($("#learning_times").val());
+                                                    if(enableAnimation)
+                                                       neuron.fps = $("#fps").val();
+                                                   else
+                                                       neuron.fps = 10000;
+                                                }
+                                                neuron.functionUpdate('function');
                                                 
                                             }
                                             else {
@@ -333,7 +321,7 @@ and open the template in the editor.
                                                 $('#play').val("Play");
                                                 $('#play').text('Play').button("refresh");
                                                 AnimationStatus = Status.Stop;
-                                                setControler(true); // 開啟使用者設定
+                                                disableControler(false); // 開啟使用者設定
                                             }
                                         });
                                         $('#pause').click(function() {
@@ -347,6 +335,17 @@ and open the template in the editor.
                                         $('#h-fill-basic-reset').click(function() {
                                             $('#h-fill-basic .progress-bar').attr('data-transitiongoal', 0).progressbar({display_text: 'fill'});
                                         });
+                                        
+                                        // 使用者設定的開關
+                                        disableControler = function(e){
+                                            $('#learning_times').attr("disabled", e);
+                                            $('#learning_rate').attr("disabled", e);
+                                            $('#fps').attr("disabled", e);
+                                            $('#animation').attr("disabled", e);
+                                            $('#auto_training').attr("disabled", e);
+                                            $('input[type="checkbox"][name="checkbox2"]').attr("disabled", e);
+                                            $('input[type="checkbox"][name="checkbox2"]').attr("disabled", e);
+                                        };
                                     });
                                 </script>
                             </div>
@@ -367,21 +366,86 @@ and open the template in the editor.
             </main>
 
             <div class="site-body">
-                <h2>Function Display</h2>
+                <h2 style="margin: 0 auto;">Function Display</h2>
                 <div class="site-body-inner container">
                     
+                    <!--
                     <div class="site-section">                        
 
                       <div class="site-section-body">
 
                         
-
+ 
                       </div>
-                    </div>
+                    </div>-->
 
                     <div class="site-section">
-
-                      <p class="lead">88</p>
+                        <script type="text/x-mathjax-config">
+                          MathJax.Hub.Config({
+                            tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+                          });
+                          MathJax.Hub.Config({
+                            jax: ["input/TeX","output/HTML-CSS"],
+                            displayAlign: "left"
+                            });
+                        </script>
+                        <p class="lead" id="function">
+<!--                            $$n = 0$$
+                            $$
+                            
+                            \begin{equation}       
+                            
+                            y(0)=\varphi
+                            
+                            \left[                 %左括號
+                              \begin{array}{cc}   %3列 置中
+                                \omega^{T}(0) & x(0)\\  %第1行
+                              \end{array}
+                            \right]                 %右括號
+                            
+                            =
+                            
+                            \left[                
+                              \begin{array}{cc}   
+                                    \left(
+                                      \begin{array}{ccc}
+                                        -1 & 0 & 1\\
+                                      \end{array}
+                                    \right)   
+                                &
+                                    \left(                 
+                                      \begin{array}{c}  
+                                        -1\\
+                                        0 \\
+                                        0 \\
+                                      \end{array}
+                                    \right)                
+                                \\
+                                
+                              \end{array}
+                            \right]  
+                            
+                            \end{equation}
+                            
+                            
+                            $$
+                            $$
+                            \begin{equation}
+                            
+                                \omega(3) = \omega(2)-\eta x(2) =
+                                
+                                \left(                 
+                                 \begin{array}{c}   
+                                   -1\\
+                                   0 \\
+                                   0 \\
+                                 \end{array}
+                               \right)   
+                                
+                            
+                            \end{equation}
+                            $$-->
+                        </p>
                       <div class="site-section-body">
 
                       </div>

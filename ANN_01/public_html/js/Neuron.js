@@ -14,13 +14,19 @@ var Neuron = function (database,learning_rate,learning_times,fps) {
     this.true_loop_times = this.learning_times * this.data.length;
     this.auto_control = true;
     this.fps = fps;
+    this.isUpdate = false;
     
     this.weight = [];
     //for(var i = 0;i < this.n + 1;i++)
+    var initW = ['-1','0','1','0','1','0','1','0','1'];
     this.weight.push(new Array(this.data[0].length +1));
     this.weight[this.n][0] = -1;
-    this.weight[this.n][1] = 0;
-    this.weight[this.n][2] = 1;
+    for(var i = 1; i < this.data[0].length +1; i++)
+        this.weight[this.n][i] = (i-1)%2;
+//    this.weight[this.n][0] = -1;
+//    this.weight[this.n][1] = 0;
+//    this.weight[this.n][2] = 1;
+console.log(this.weight);
     this.expecationLabel = database.expecationLabel;// 儲存資料庫中期望值的種類
     
     this.mDrawer = new Drawer(database);//draw(database);
@@ -63,9 +69,11 @@ var Neuron = function (database,learning_rate,learning_times,fps) {
         
         console.log('dataStep:'+this.dataStep+',temp:'+temp+','+'r:'+r);
         if(temp * r >= 0) {// 正確分類
+            this.isUpdate = false;
             return 0;
         }
         else{
+            this.isUpdate = true;
             if(r > 0)
                 return 2;
             else
@@ -139,6 +147,7 @@ Neuron.prototype = {
                 
                 this.n++;
                 if(enableAnimation) {
+                    this.functionUpdate('function');
                     this.mDrawer.clearFunc();
                     this.mDrawer.drawCircle(this.data[this.dataStep]);
                     this.mDrawer.drawFunc('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')' );   
@@ -162,6 +171,7 @@ Neuron.prototype = {
                     
                }                        //  ..  setTimeout()
                else if(!enableAnimation) { // 不開動畫要再最後一次畫上結果
+                   this.functionUpdate('function');
                     neuron.mDrawer.clearFunc();
                     neuron.mDrawer.drawCircle(neuron.data[neuron.dataStep]);
                     neuron.mDrawer.drawFunc('-1*('+neuron.weight[neuron.n][1].toString()+'/'+neuron.weight[neuron.n][2].toString()+')*x+('+neuron.weight[neuron.n][0].toString()+'/'+neuron.weight[neuron.n][2].toString()+')' );   
@@ -186,6 +196,97 @@ Neuron.prototype = {
     setLearningTimes: function(t){
         t = this.learning_times;
         this.true_loop_times = t * this.data.length;
+    },
+    functionUpdate: function(obj){// append id='function'
+        //neuron.functionUpdate('function');
+        var n = this.n - 1; 
+        var a = [];
+        switch(this.data.length){
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            
+        }
+        //Latex
+        var test = "\
+        $$n = "+n+"$$\n\
+        $$\\begin{equation}\n\
+            y("+n+")=\\varphi\n\
+            \\left[\n\
+                \\begin{array}{cc}\n\
+                    \\omega^{T}("+n+") & x("+n+")\\\\ \n\
+                \\end{array}\n\
+            \\right]\n\
+        =\n\
+        \n\
+        \n\
+            \\left[\n\
+                \\begin{array}{cc}\n\
+                    \\left(\n\
+                        \\begin{array}{ccc}\n\
+                            "+this.weight[n][0]+" & "+this.weight[n][1]+" & "+this.weight[n][2]+"\\\\ \n\
+                        \\end{array}\n\
+                    \\right)\n\
+                    &\n\
+                    \\left(\n\
+                        \\begin{array}{c}\n\
+                            -1\\\\ \n\
+                            "+this.data[this.dataStep][0]+" \\\\ \n\
+                            "+this.data[this.dataStep][1]+" \\\\ \n\
+                        \\end{array}\n\
+                    \\right)\n\
+                    \\\\ \n\
+                \\end{array}\n\
+            \\right]\n\
+        \\end{equation}$$\n\
+        \n\
+        \n\
+        ";
+        if(this.isUpdate) {
+            test += "\n\
+            $$\\begin{equation}\n\
+                \\omega("+this.n+") = \\omega("+n+")-\\eta x("+n+") =\n\
+                \\left(\n\
+                    \\begin{array}{c}  \n\
+                        "+this.weight[this.n][0]+"\\\\ \n\
+                        "+this.weight[this.n][1]+" \\\\ \n\
+                        "+this.weight[this.n][2]+" \\\\ \n\
+                    \\end{array}\n\
+                \\right) \n\
+            \\end{equation}$$\n\
+            \n\
+            ";            
+        }
+        else{
+            test += "\n\
+            $$\\begin{equation}\n\
+                \\omega("+this.n+") = \\omega("+n+") =\n\
+                \\left(\n\
+                    \\begin{array}{c}  \n\
+                        "+this.weight[this.n][0]+"\\\\ \n\
+                        "+this.weight[this.n][1]+" \\\\ \n\
+                        "+this.weight[this.n][2]+" \\\\ \n\
+                    \\end{array}\n\
+                \\right) \n\
+            \\end{equation}$$\n\
+            \n\
+            ";
+            
+        }
+        
+        
+        
+        $('#'+obj).html(test);
+        // append 要叫mathjax去更新他
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,obj]);
+        
     }
     
     

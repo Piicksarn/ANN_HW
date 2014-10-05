@@ -153,6 +153,13 @@ Neuron.prototype = {
                     this.mDrawer.drawFunc('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')' );   
                     console.log('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')');
                 }
+                else if (!enableAnimation && this.n == this.true_loop_times){
+                    this.functionUpdate('function');
+                    neuron.mDrawer.clearFunc();
+                    neuron.mDrawer.drawCircle(neuron.data[neuron.dataStep]);
+                    neuron.mDrawer.drawFunc('-1*('+neuron.weight[neuron.n][1].toString()+'/'+neuron.weight[neuron.n][2].toString()+')*x+('+neuron.weight[neuron.n][0].toString()+'/'+neuron.weight[neuron.n][2].toString()+')' );   
+                    
+                }
                 break;
         }
         pb(); // 更新進度條
@@ -170,14 +177,14 @@ Neuron.prototype = {
                     }                  //  ..  again which will trigger another 
                     
                }                        //  ..  setTimeout()
-               else if(!enableAnimation) { // 不開動畫要再最後一次畫上結果
-                   this.functionUpdate('function');
-                    neuron.mDrawer.clearFunc();
-                    neuron.mDrawer.drawCircle(neuron.data[neuron.dataStep]);
-                    neuron.mDrawer.drawFunc('-1*('+neuron.weight[neuron.n][1].toString()+'/'+neuron.weight[neuron.n][2].toString()+')*x+('+neuron.weight[neuron.n][0].toString()+'/'+neuron.weight[neuron.n][2].toString()+')' );   
-                    //console.log('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')');
-                                   
-               }
+//               else if(enableAnimation == false) { // 不開動畫要再最後一次畫上結果
+//                   this.functionUpdate('function');
+//                    neuron.mDrawer.clearFunc();
+//                    neuron.mDrawer.drawCircle(neuron.data[neuron.dataStep]);
+//                    neuron.mDrawer.drawFunc('-1*('+neuron.weight[neuron.n][1].toString()+'/'+neuron.weight[neuron.n][2].toString()+')*x+('+neuron.weight[neuron.n][0].toString()+'/'+neuron.weight[neuron.n][2].toString()+')' );   
+//                    //console.log('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')');
+//                                   
+//               }
             }, 1000.0/neuron.fps);
         }
         myLoop(this.n,this.true_loop_times);        

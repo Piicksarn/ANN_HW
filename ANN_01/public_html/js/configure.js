@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+var enableAnimation = true;
 var pb;
 var neuron;
-var enableAnimation = true;
+
 var AnimationStatus = 0;
 if(typeof Status == "undefined") {
     var Status = {};

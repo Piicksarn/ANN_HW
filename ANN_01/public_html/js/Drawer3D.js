@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-var Drawer = function (mdata) {
+var Drawer3D = function (mdata) {
     this.data = mdata;//Database.data Database.expecation
     this.boxsize = this.data.maxData + 1;
     this.board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox:[-1*this.boxsize, this.boxsize, this.boxsize, -1*this.boxsize], axis: true, grid: true, keepaspectratio: true, showcopyright: false, zoom: true, pan: true}),
@@ -13,7 +13,7 @@ var Drawer = function (mdata) {
     this.curve;
 };
 
-Drawer.prototype = {
+Drawer3D.prototype = {
     data: '',
     f: '',
     curve: '',
@@ -90,5 +90,3 @@ Drawer.prototype = {
         this.board.createElement('circle',[p,q], {strokeColor:color});
     }
 };
-
-

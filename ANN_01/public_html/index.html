@@ -31,11 +31,18 @@ and open the template in the editor.
         <script src="js/libs/bootstrap/bootstrap.js"></script>
         <script type="text/javascript" src="js/libs/mathjax/MathJax.js?config=TeX-AMS_HTML-full"></script>
         <script type="text/javascript" src="js/libs/bootstrap/bootstrap-progressbar.js"></script>
+        
+        <script type="text/javascript" src='js/libs/webgl_surface_plot/SurfacePlot.js'></script>
+        <script type="text/javascript" src='js/libs/webgl_surface_plot/ColourGradient.js'></script>
+        <script type="text/javascript" src="js/libs/webgl_surface_plot/glMatrix-0.9.5.min.js"></script>
+        <script type="text/javascript" src="js/libs/webgl_surface_plot/webgl-utils.js"></script>
+        <script type="text/javascript" src="js/libs/webgl_surface_plot/parser.js"></script>
         <!--<script src="js/libs/bootstrap/bootstrap-switch.js"></script>-->
         
         
         <script type="text/javascript" src="js/configure.js"></script>
         <script type="text/javascript" src="js/Drawer.js"></script>
+        <script type="text/javascript" src="js/Drawer3D.js"></script>
         <script type="text/javascript" src="js/fileReader.js"></script>
         <script type="text/javascript" src="js/Neuron.js"></script>
         
@@ -129,34 +136,34 @@ and open the template in the editor.
                     }
                 });
                 $('#auto_training').click(function(){
-                    if(AnimatiobStatus == Status.Stop) {
-                     if ($('input[type="checkbox"][name="checkbox"]').is(':checked')) { // Disable  Auto Training 
-                        $('input[type="checkbox"][name="checkbox"]').prop('checked', false);
-                        $('input[type="checkbox"][name="checkbox"]').removeClass('checked');
-                        $('#user_control').css('display','block');
-                        $('#auto_control').css('display','none');
-                        
-                        // 將Animation打勾
-                        enableAnimation = true;
-                        $('input[type="checkbox"][name="checkbox2"]').prop('checked', true);
-                        $('input[type="checkbox"][name="checkbox2"]').addClass('checked');
-                        $('input[type="checkbox"][name="checkbox2"]').attr("disabled", true);
-                        $('#animation').attr("disabled", true);
-                    } else {// Enable  Auto Training  
-                        $('input[type="checkbox"][name="checkbox"]').prop('checked', true);
-                        $('input[type="checkbox"][name="checkbox"]').addClass('checked');
-                        $('#user_control').css('display','none');
-                        $('#auto_control').css('display','block');
-                        $('#pause').attr("disabled", true);
-                        
-                        // 將Animation打勾
-                        enableAnimation = true;
-                        $('input[type="checkbox"][name="checkbox2"]').prop('checked', true);
-                        $('input[type="checkbox"][name="checkbox2"]').addClass('checked');
-                        $('input[type="checkbox"][name="checkbox2"]').attr("disabled", false);
-                        $('#animation').attr("disabled", false);
+                    if(AnimationStatus == Status.Stop) {
+                        if ($('input[type="checkbox"][name="checkbox"]').is(':checked')) { // Disable  Auto Training 
+                           $('input[type="checkbox"][name="checkbox"]').prop('checked', false);
+                           $('input[type="checkbox"][name="checkbox"]').removeClass('checked');
+                           $('#user_control').css('display','block');
+                           $('#auto_control').css('display','none');
 
-                    }
+                           // 將Animation打勾
+                           enableAnimation = true;
+                           $('input[type="checkbox"][name="checkbox2"]').prop('checked', true);
+                           $('input[type="checkbox"][name="checkbox2"]').addClass('checked');
+                           $('input[type="checkbox"][name="checkbox2"]').attr("disabled", true);
+                           $('#animation').attr("disabled", true);
+                       } else {// Enable  Auto Training  
+                           $('input[type="checkbox"][name="checkbox"]').prop('checked', true);
+                           $('input[type="checkbox"][name="checkbox"]').addClass('checked');
+                           $('#user_control').css('display','none');
+                           $('#auto_control').css('display','block');
+                           $('#pause').attr("disabled", true);
+
+                           // 將Animation打勾
+                           enableAnimation = true;
+                           $('input[type="checkbox"][name="checkbox2"]').prop('checked', true);
+                           $('input[type="checkbox"][name="checkbox2"]').addClass('checked');
+                           $('input[type="checkbox"][name="checkbox2"]').attr("disabled", false);
+                           $('#animation').attr("disabled", false);
+
+                       }
                     }
                     
                 });
@@ -260,15 +267,16 @@ and open the template in the editor.
                     <script type="text/javascript">
                         ResizeCanvas();//讓高與寬相同 設 %為了給手機囉！
                     </script>
-                    
                     <hr/>
                     <div id="user_control" style="display: none;">
                         <button type="button" id="previous" class="btn btn-success">Previous</button>
                         <button type="button" id="next" class="btn btn-success">Next</button>
+                        <button type="button" id="test_user" class="btn btn-success">Test</button>
                     </div>
                     <div id="auto_control">
                         <button type="button" id="pause" class="btn btn-primary">Pause</button>
-                        <button type="button" id="play" class="btn btn-primary">Play</button>
+                        <button type="button" id="play" class="btn btn-primary" value='Play'>Play</button>
+                        <button type="button" id="test_auto" class="btn btn-primary">Test</button>
                     </div>
                     <hr/>
                     <!--
@@ -283,6 +291,16 @@ and open the template in the editor.
                                 <script type='text/javascript'>
                                     $(document).ready(function() {
                                         $('#play').val("Play");
+                                        /*
+                                        styles = { 'width': '30%' , 'height': '50px' , 'margin': '0px auto'};
+                                        $('#play').css(styles);
+                                        $('#pause').css(styles);
+                                        $('#test_auto').css(styles);
+                                        $('#previous').css(styles);
+                                        $('#next').css(styles);
+                                        $('#test_user').css(styles);
+        */
+                                        // 使用者自己控制
                                         $('#next').click(function() {
                                             var n = neuron.Learning(1);
                                             pb();
@@ -291,6 +309,11 @@ and open the template in the editor.
                                         $('#previous').click(function() { 
                                             var n = neuron.Learning(0);
                                         });
+                                        $('#test_user').click(function() { 
+                                            neuron.Testing();
+                                        });
+                                        
+                                        
                                         $('#play').click(function() {
                                             if($('#play').val() == 'Play') {
                                                 $('#function').html('');
@@ -300,6 +323,8 @@ and open the template in the editor.
                                                 $('#pause').attr("disabled", false);
                                                 $('#play').val("Stop");
                                                 $('#play').text('Stop').button("refresh");
+                                                // 關閉測試按鈕
+                                                $('#test_auto').hide();    
                                                 AnimationStatus = Status.Start;
                                                 disableControler(true); // 關閉使用者設定
                                                 
@@ -312,6 +337,7 @@ and open the template in the editor.
                                                        neuron.fps = 10000;
                                                 }
                                                 neuron.functionUpdate('function');
+                                                                                                                                       
                                                 
                                             }
                                             else {
@@ -322,6 +348,8 @@ and open the template in the editor.
                                                 $('#play').text('Play').button("refresh");
                                                 AnimationStatus = Status.Stop;
                                                 disableControler(false); // 開啟使用者設定
+                                                // 啟動測試按鈕
+                                                $('#test_auto').show();
                                             }
                                         });
                                         $('#pause').click(function() {
@@ -331,6 +359,12 @@ and open the template in the editor.
                                             $('#play').val("Play");
                                             $('#play').text('Play').button("refresh");
                                             AnimationStatus = Status.Pause;
+                                            // 啟動測試按鈕
+                                            $('#test_auto').show();
+                                            neuron.pauseAnimation();
+                                        });
+                                        $('#test_auto').click(function() { 
+                                            neuron.Testing();
                                         });
                                         $('#h-fill-basic-reset').click(function() {
                                             $('#h-fill-basic .progress-bar').attr('data-transitiongoal', 0).progressbar({display_text: 'fill'});

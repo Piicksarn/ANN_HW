@@ -6,8 +6,10 @@
 var enableAnimation = true;
 var pb;
 var neuron;
+var dataSegmentation = 2/3; // 訓練資料佔比
 
 var AnimationStatus = 0;
+console.log("AnimationStatus");
 if(typeof Status == "undefined") {
     var Status = {};
     Status.Stop = 0;

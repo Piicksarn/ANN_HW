@@ -5,10 +5,18 @@
  */
 
 var Neuron = function (database,learning_rate,learning_times,fps) {
+    //訓練
     this.n = 0;// 回圈次數
     this.dataStep;// data學習循環
-    this.data = database.data;// 多維度 資料數 * 資料維度
-    this.expecation = database.expecation;
+    this.data = database.trainingData;// 多維度 資料數 * 資料維度
+    this.expecation = database.train_expecation;
+    
+    // 測試
+    this.n1 = 0;
+    this.test_dataStep;
+    this.test_data = database.testingData;// 多維度 資料數 * 資料維度
+    this.test_expecation = database.test_expecation;
+    
     this.learning_rate = learning_rate;
     this.learning_times = learning_times;// 學習次數 = 回圈次數 / 資料數 -。 學習一次要跑全部的資料
     this.true_loop_times = this.learning_times * this.data.length;
@@ -16,17 +24,20 @@ var Neuron = function (database,learning_rate,learning_times,fps) {
     this.fps = fps;
     this.isUpdate = false;
     
+    this.error = []; // 儲存分類錯誤的data
+    this.errorPos = [];// 為了加速繪圖
+    
     this.weight = [];
     //for(var i = 0;i < this.n + 1;i++)
-    var initW = ['-1','0','1','0','1','0','1','0','1'];
+    var initW = ['-1','0','1','0','1','0','1','0','1','0','1','0','1','0','1','0','1'];
     this.weight.push(new Array(this.data[0].length +1));
     this.weight[this.n][0] = -1;
     for(var i = 1; i < this.data[0].length +1; i++)
         this.weight[this.n][i] = (i-1)%2;
-//    this.weight[this.n][0] = -1;
-//    this.weight[this.n][1] = 0;
-//    this.weight[this.n][2] = 1;
-console.log(this.weight);
+    //    this.weight[this.n][0] = -1;
+    //    this.weight[this.n][1] = 0;
+    //    this.weight[this.n][2] = 1;
+    console.log(this.weight);
     this.expecationLabel = database.expecationLabel;// 儲存資料庫中期望值的種類
     
     this.mDrawer = new Drawer(database);//draw(database);
@@ -35,14 +46,14 @@ console.log(this.weight);
 
     //等database...不同步有點煩
     function wait () {
-            setTimeout(function () {
-                neuron.mDrawer.drawPoint();
-                neuron.mDrawer.drawFunc('-1*('+neuron.weight[neuron.n][1].toString()+'/'+neuron.weight[neuron.n][2].toString()+')*x+('+neuron.weight[neuron.n][0].toString()+'/'+neuron.weight[neuron.n][2].toString()+')' );   
-             
-            }, 500);
-        }
+        setTimeout(function () {
+            neuron.mDrawer.drawPoint(0);
+            neuron.mDrawer.drawFunc('-1*('+neuron.weight[neuron.n][1].toString()+'/'+neuron.weight[neuron.n][2].toString()+')*x+('+neuron.weight[neuron.n][0].toString()+'/'+neuron.weight[neuron.n][2].toString()+')' );   
+
+        }, 500);
+    }
         
-   wait();
+    wait();
 
     console.log('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')');
     
@@ -81,6 +92,24 @@ console.log(this.weight);
         }
         
     };
+    
+    this.testing = function (r) { // 活化函數 閥值 ,  0 不更新W , 1 W+學習率*X , 2 W-學習率*X
+        var temp;
+        
+        if(this.test_expecation[this.test_dataStep] != 1)
+            temp = -1;
+        else
+            temp = this.test_expecation[this.test_dataStep];
+        
+        //console.log('dataStep:'+this.dataStep+',temp:'+temp+','+'r:'+r);
+        if(temp * r >= 0) {// 正確分類
+        }
+        else{// 錯誤分類
+            this.error.push(this.test_data[this.test_dataStep]);
+            this.errorPos.push(this.test_dataStep);
+        }
+        
+    };
 
     /*
     for(var a = 0;a < 2;a++){
@@ -106,7 +135,7 @@ Neuron.prototype = {
                     var n = this.n -1;
                     if(n >= 0) {
                         this.dataStep = n % this.data.length;
-                        this.mDrawer.drawCircle(this.data[this.dataStep]);
+                        this.mDrawer.drawCircle(this.data[this.dataStep],'#222222');
                     }
                     this.mDrawer.drawFunc('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')' );   
                 }
@@ -149,14 +178,14 @@ Neuron.prototype = {
                 if(enableAnimation) {
                     this.functionUpdate('function');
                     this.mDrawer.clearFunc();
-                    this.mDrawer.drawCircle(this.data[this.dataStep]);
+                    this.mDrawer.drawCircle(this.data[this.dataStep],'#222222');
                     this.mDrawer.drawFunc('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')' );   
                     console.log('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')');
                 }
                 else if (!enableAnimation && this.n == this.true_loop_times){
                     this.functionUpdate('function');
                     neuron.mDrawer.clearFunc();
-                    neuron.mDrawer.drawCircle(neuron.data[neuron.dataStep]);
+                    neuron.mDrawer.drawCircle(neuron.data[neuron.dataStep],'#222222');
                     neuron.mDrawer.drawFunc('-1*('+neuron.weight[neuron.n][1].toString()+'/'+neuron.weight[neuron.n][2].toString()+')*x+('+neuron.weight[neuron.n][0].toString()+'/'+neuron.weight[neuron.n][2].toString()+')' );   
                     
                 }
@@ -200,6 +229,12 @@ Neuron.prototype = {
                 console.log('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')');
                 
     },
+    pauseAnimation: function(){ // 暫停就顯示目前狀況        
+        this.mDrawer.clearFunc();
+        this.mDrawer.drawFunc('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')' );   
+                console.log('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')');
+                
+    },
     setLearningTimes: function(t){
         t = this.learning_times;
         this.true_loop_times = t * this.data.length;
@@ -238,7 +273,7 @@ Neuron.prototype = {
                 \\begin{array}{cc}\n\
                     \\left(\n\
                         \\begin{array}{ccc}\n\
-                            "+this.weight[n][0]+" & "+this.weight[n][1]+" & "+this.weight[n][2]+"\\\\ \n\
+                            "+parseFloat(Math.round(this.weight[n][0]*100))/100+" & "+parseFloat(Math.round(this.weight[n][1]*100))/100+" & "+parseFloat(Math.round(this.weight[n][2]*100))/100+"\\\\ \n\
                         \\end{array}\n\
                     \\right)\n\
                     &\n\
@@ -262,9 +297,9 @@ Neuron.prototype = {
                 \\omega("+this.n+") = \\omega("+n+")-\\eta x("+n+") =\n\
                 \\left(\n\
                     \\begin{array}{c}  \n\
-                        "+this.weight[this.n][0]+"\\\\ \n\
-                        "+this.weight[this.n][1]+" \\\\ \n\
-                        "+this.weight[this.n][2]+" \\\\ \n\
+                        "+parseFloat(Math.round(this.weight[this.n][0]*100))/100+"\\\\ \n\
+                        "+parseFloat(Math.round(this.weight[this.n][1]*100))/100+" \\\\ \n\
+                        "+parseFloat(Math.round(this.weight[this.n][2]*100))/100+" \\\\ \n\
                     \\end{array}\n\
                 \\right) \n\
             \\end{equation}$$\n\
@@ -277,9 +312,9 @@ Neuron.prototype = {
                 \\omega("+this.n+") = \\omega("+n+") =\n\
                 \\left(\n\
                     \\begin{array}{c}  \n\
-                        "+this.weight[this.n][0]+"\\\\ \n\
-                        "+this.weight[this.n][1]+" \\\\ \n\
-                        "+this.weight[this.n][2]+" \\\\ \n\
+                        "+parseFloat(Math.round(this.weight[this.n][0]*100))/100+"\\\\ \n\
+                        "+parseFloat(Math.round(this.weight[this.n][1]*100))/100+" \\\\ \n\
+                        "+parseFloat(Math.round(this.weight[this.n][2]*100))/100+" \\\\ \n\
                     \\end{array}\n\
                 \\right) \n\
             \\end{equation}$$\n\
@@ -289,10 +324,26 @@ Neuron.prototype = {
         }
         
         
-        
         $('#'+obj).html(test);
         // append 要叫mathjax去更新他
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,obj]);
+        
+    },
+    Testing: function () {
+        this.mDrawer.clearAll();
+        while(this.n1 < this.test_data.length){
+            this.test_dataStep = this.n1;// % this.test_data.length;
+            var v = this.Multiplication(this.test_data[this.test_dataStep],this.weight[this.n]); // this.n 固定(最後的weight結果)
+
+            // 計算分類結果  並將結果存入  this.error
+            this.testing(v);
+            this.n1++;
+        }
+        
+        
+        this.mDrawer.drawPoint(1);
+        this.mDrawer.drawFunc('-1*('+this.weight[this.n][1].toString()+'/'+this.weight[this.n][2].toString()+')*x+('+this.weight[this.n][0].toString()+'/'+this.weight[this.n][2].toString()+')' );   
+        console.log(this.error);        
         
     }
     

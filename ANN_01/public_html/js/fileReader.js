@@ -135,6 +135,11 @@ Database.prototype = {
             this.testingData = this.data.slice(0 , 1).concat(this.data.slice(3 , 4));
             this.test_expecation = this.expecation.slice(0 , 1).concat(this.expecation.slice(3 , 4));
         }
+        
+        if(this.trainingData[0].length == 3) {
+            mode3D = true;
+        }
+           
                       
         console.log("Data Start");
         console.log(this.data);

@@ -22,6 +22,7 @@ and open the template in the editor.
             background-repeat: repeat-x;
             filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#7B7B7B, endColorstr=#272727, GradientType=0);
             }
+            
         </style>
 
         <script src="js/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -263,7 +264,11 @@ and open the template in the editor.
                 <h2 id="filename">Please Select a File!</h2>
                 <div class="container">
                     <hr/>
-                    <div id="jxgbox" class="jxgbox" style="width:90%; height:width; margin: 0 auto;"></div>
+                    <div id="jxgbox" class="jxgbox" style="width:90%; height:width; margin: 0 auto; "></div>
+                    <iframe src="result3D.html" id="iframe" name="iframe" style="width:90%; height:90%; margin: 0 auto; display: none;">
+                        Iframe not supported..... change your browser...
+                    </iframe>
+                    <div id="testt"></div>
                     <script type="text/javascript">
                         ResizeCanvas();//讓高與寬相同 設 %為了給手機囉！
                     </script>
@@ -272,11 +277,13 @@ and open the template in the editor.
                         <button type="button" id="previous" class="btn btn-success">Previous</button>
                         <button type="button" id="next" class="btn btn-success">Next</button>
                         <button type="button" id="test_user" class="btn btn-success">Test</button>
+                        <button type="button" id="test3d_user" class="btn btn-success" style="display: none;">3D mode</button>
                     </div>
                     <div id="auto_control">
                         <button type="button" id="pause" class="btn btn-primary">Pause</button>
                         <button type="button" id="play" class="btn btn-primary" value='Play'>Play</button>
                         <button type="button" id="test_auto" class="btn btn-primary">Test</button>
+                        <button type="button" id="test3d_auto" class="btn btn-primary" style="display: none;">3D mode</button>
                     </div>
                     <hr/>
                     <!--
@@ -312,6 +319,15 @@ and open the template in the editor.
                                         $('#test_user').click(function() { 
                                             neuron.Testing();
                                         });
+                                        $('#test3d_user').click(function() { 
+                                            //window.open("result3D.html");
+                                            //window.location.href = "Axis.html";
+                                            $('#jxgbox').css('display','none');
+                                            $('#iframe').css('display','block');
+                                            var ifrmae = document.getElementById('iframe');
+                                            ifrmae.contentDocument.getElementById("catch").value = neuron;
+                                            console.log(ifrmae.contentDocument.getElementById("catch").value);
+                                        });
                                         
                                         
                                         $('#play').click(function() {
@@ -324,7 +340,8 @@ and open the template in the editor.
                                                 $('#play').val("Stop");
                                                 $('#play').text('Stop').button("refresh");
                                                 // 關閉測試按鈕
-                                                $('#test_auto').hide();    
+                                                $('#test_auto').hide();
+                                                $('#test3d_auto').hide();
                                                 AnimationStatus = Status.Start;
                                                 disableControler(true); // 關閉使用者設定
                                                 
@@ -349,7 +366,10 @@ and open the template in the editor.
                                                 AnimationStatus = Status.Stop;
                                                 disableControler(false); // 開啟使用者設定
                                                 // 啟動測試按鈕
-                                                $('#test_auto').show();
+                                                if(mode3D)
+                                                    $('#test3d_auto').show();
+                                                else
+                                                    $('#test_auto').show();
                                             }
                                         });
                                         $('#pause').click(function() {
@@ -360,11 +380,26 @@ and open the template in the editor.
                                             $('#play').text('Play').button("refresh");
                                             AnimationStatus = Status.Pause;
                                             // 啟動測試按鈕
-                                            $('#test_auto').show();
+                                            if(mode3D){
+                                                $('#test3d_auto').show();
+                                            }
+                                            else
+                                                $('#test_auto').show();
                                             neuron.pauseAnimation();
                                         });
                                         $('#test_auto').click(function() { 
                                             neuron.Testing();
+                                        });
+                                        $('#test3d_auto').click(function() { 
+                                            //window.open("result3D.html");
+                                            
+                                            //window.location.href = "Axis.html";
+                                            $('#jxgbox').css('display','none');
+                                            $('#iframe').css('display','block');
+                                            var iframe = document.getElementById('iframe');
+                                            iframe.contentDocument.getElementById("catch").value = neuron;
+                                            console.log(iframe.contentDocument.getElementById("catch").value.n);
+                                            document.iframe.iframeMethod(); 
                                         });
                                         $('#h-fill-basic-reset').click(function() {
                                             $('#h-fill-basic .progress-bar').attr('data-transitiongoal', 0).progressbar({display_text: 'fill'});

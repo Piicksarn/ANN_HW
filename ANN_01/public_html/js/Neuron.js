@@ -243,10 +243,145 @@ Neuron.prototype = {
         //neuron.functionUpdate('function');
         var n = this.n - 1; 
         var a = [];
-        switch(this.data.length){
+        switch(this.data[0].length){ // 唉..一樣用最笨方案
             case 2:
+            //Latex
+            var test = "\
+            $$n = "+n+"$$\n\
+            $$\\begin{equation}\n\
+                y("+n+")=\\varphi\n\
+                \\left[\n\
+                    \\begin{array}{cc}\n\
+                        \\omega^{T}("+n+") & x("+n+")\\\\ \n\
+                    \\end{array}\n\
+                \\right]\n\
+            =\n\
+            \n\
+            \n\
+                \\left[\n\
+                    \\begin{array}{cc}\n\
+                        \\left(\n\
+                            \\begin{array}{ccc}\n\
+                                "+parseFloat(Math.round(this.weight[n][0]*100))/100+" & "+parseFloat(Math.round(this.weight[n][1]*100))/100+" & "+parseFloat(Math.round(this.weight[n][2]*100))/100+"\\\\ \n\
+                            \\end{array}\n\
+                        \\right)\n\
+                        &\n\
+                        \\left(\n\
+                            \\begin{array}{c}\n\
+                                -1\\\\ \n\
+                                "+this.data[this.dataStep][0]+" \\\\ \n\
+                                "+this.data[this.dataStep][1]+" \\\\ \n\
+                            \\end{array}\n\
+                        \\right)\n\
+                        \\\\ \n\
+                    \\end{array}\n\
+                \\right]\n\
+            \\end{equation}$$\n\
+            \n\
+            \n\
+            ";
+            if(this.isUpdate) {
+                test += "\n\
+                $$\\begin{equation}\n\
+                    \\omega("+this.n+") = \\omega("+n+")-\\eta x("+n+") =\n\
+                    \\left(\n\
+                        \\begin{array}{c}  \n\
+                            "+parseFloat(Math.round(this.weight[this.n][0]*100))/100+"\\\\ \n\
+                            "+parseFloat(Math.round(this.weight[this.n][1]*100))/100+" \\\\ \n\
+                            "+parseFloat(Math.round(this.weight[this.n][2]*100))/100+" \\\\ \n\
+                        \\end{array}\n\
+                    \\right) \n\
+                \\end{equation}$$\n\
+                \n\
+                ";            
+            }
+            else{
+                test += "\n\
+                $$\\begin{equation}\n\
+                    \\omega("+this.n+") = \\omega("+n+") =\n\
+                    \\left(\n\
+                        \\begin{array}{c}  \n\
+                            "+parseFloat(Math.round(this.weight[this.n][0]*100))/100+"\\\\ \n\
+                            "+parseFloat(Math.round(this.weight[this.n][1]*100))/100+" \\\\ \n\
+                            "+parseFloat(Math.round(this.weight[this.n][2]*100))/100+" \\\\ \n\
+                        \\end{array}\n\
+                    \\right) \n\
+                \\end{equation}$$\n\
+                \n\
+                ";
+
+            }
                 break;
             case 3:
+            //Latex
+            var test = "\
+            $$n = "+n+"$$\n\
+            $$\\begin{equation}\n\
+                y("+n+")=\\varphi\n\
+                \\left[\n\
+                    \\begin{array}{cc}\n\
+                        \\omega^{T}("+n+") & x("+n+")\\\\ \n\
+                    \\end{array}\n\
+                \\right]\n\
+            =\n\
+            \n\
+            \n\
+                \\left[\n\
+                    \\begin{array}{cc}\n\
+                        \\left(\n\
+                            \\begin{array}{ccc}\n\
+                                "+parseFloat(Math.round(this.weight[n][0]*100))/100+" & "+parseFloat(Math.round(this.weight[n][1]*100))/100+" & "+parseFloat(Math.round(this.weight[n][2]*100))/100+" & "+parseFloat(Math.round(this.weight[n][1]*100))/100+"\\\\ \n\
+                            \\end{array}\n\
+                        \\right)\n\
+                        &\n\
+                        \\left(\n\
+                            \\begin{array}{c}\n\
+                                -1\\\\ \n\
+                                "+this.data[this.dataStep][0]+" \\\\ \n\
+                                "+this.data[this.dataStep][1]+" \\\\ \n\
+                                "+this.data[this.dataStep][2]+" \\\\ \n\
+                            \\end{array}\n\
+                        \\right)\n\
+                        \\\\ \n\
+                    \\end{array}\n\
+                \\right]\n\
+            \\end{equation}$$\n\
+            \n\
+            \n\
+            ";
+            if(this.isUpdate) {
+                test += "\n\
+                $$\\begin{equation}\n\
+                    \\omega("+this.n+") = \\omega("+n+")-\\eta x("+n+") =\n\
+                    \\left(\n\
+                        \\begin{array}{c}  \n\
+                            "+parseFloat(Math.round(this.weight[this.n][0]*100))/100+"\\\\ \n\
+                            "+parseFloat(Math.round(this.weight[this.n][1]*100))/100+" \\\\ \n\
+                            "+parseFloat(Math.round(this.weight[this.n][2]*100))/100+" \\\\ \n\
+                            "+parseFloat(Math.round(this.weight[this.n][3]*100))/100+" \\\\ \n\
+                        \\end{array}\n\
+                    \\right) \n\
+                \\end{equation}$$\n\
+                \n\
+                ";            
+            }
+            else{
+                test += "\n\
+                $$\\begin{equation}\n\
+                    \\omega("+this.n+") = \\omega("+n+") =\n\
+                    \\left(\n\
+                        \\begin{array}{c}  \n\
+                            "+parseFloat(Math.round(this.weight[this.n][0]*100))/100+"\\\\ \n\
+                            "+parseFloat(Math.round(this.weight[this.n][1]*100))/100+" \\\\ \n\
+                            "+parseFloat(Math.round(this.weight[this.n][2]*100))/100+" \\\\ \n\
+                            "+parseFloat(Math.round(this.weight[this.n][2]*100))/100+" \\\\ \n\
+                        \\end{array}\n\
+                    \\right) \n\
+                \\end{equation}$$\n\
+                \n\
+                ";
+
+            }
                 break;
             case 4:
                 break;
@@ -256,72 +391,7 @@ Neuron.prototype = {
                 break;
             
         }
-        //Latex
-        var test = "\
-        $$n = "+n+"$$\n\
-        $$\\begin{equation}\n\
-            y("+n+")=\\varphi\n\
-            \\left[\n\
-                \\begin{array}{cc}\n\
-                    \\omega^{T}("+n+") & x("+n+")\\\\ \n\
-                \\end{array}\n\
-            \\right]\n\
-        =\n\
-        \n\
-        \n\
-            \\left[\n\
-                \\begin{array}{cc}\n\
-                    \\left(\n\
-                        \\begin{array}{ccc}\n\
-                            "+parseFloat(Math.round(this.weight[n][0]*100))/100+" & "+parseFloat(Math.round(this.weight[n][1]*100))/100+" & "+parseFloat(Math.round(this.weight[n][2]*100))/100+"\\\\ \n\
-                        \\end{array}\n\
-                    \\right)\n\
-                    &\n\
-                    \\left(\n\
-                        \\begin{array}{c}\n\
-                            -1\\\\ \n\
-                            "+this.data[this.dataStep][0]+" \\\\ \n\
-                            "+this.data[this.dataStep][1]+" \\\\ \n\
-                        \\end{array}\n\
-                    \\right)\n\
-                    \\\\ \n\
-                \\end{array}\n\
-            \\right]\n\
-        \\end{equation}$$\n\
-        \n\
-        \n\
-        ";
-        if(this.isUpdate) {
-            test += "\n\
-            $$\\begin{equation}\n\
-                \\omega("+this.n+") = \\omega("+n+")-\\eta x("+n+") =\n\
-                \\left(\n\
-                    \\begin{array}{c}  \n\
-                        "+parseFloat(Math.round(this.weight[this.n][0]*100))/100+"\\\\ \n\
-                        "+parseFloat(Math.round(this.weight[this.n][1]*100))/100+" \\\\ \n\
-                        "+parseFloat(Math.round(this.weight[this.n][2]*100))/100+" \\\\ \n\
-                    \\end{array}\n\
-                \\right) \n\
-            \\end{equation}$$\n\
-            \n\
-            ";            
-        }
-        else{
-            test += "\n\
-            $$\\begin{equation}\n\
-                \\omega("+this.n+") = \\omega("+n+") =\n\
-                \\left(\n\
-                    \\begin{array}{c}  \n\
-                        "+parseFloat(Math.round(this.weight[this.n][0]*100))/100+"\\\\ \n\
-                        "+parseFloat(Math.round(this.weight[this.n][1]*100))/100+" \\\\ \n\
-                        "+parseFloat(Math.round(this.weight[this.n][2]*100))/100+" \\\\ \n\
-                    \\end{array}\n\
-                \\right) \n\
-            \\end{equation}$$\n\
-            \n\
-            ";
-            
-        }
+
         
         
         $('#'+obj).html(test);

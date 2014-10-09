@@ -11,7 +11,6 @@
   <script type="text/javascript" charset="utf-8" src="build/MathBox-bundle.js"></script>
 
   <script type="text/javascript">
-      var aa = dataSegmentation;
     DomReady.ready(function () {
       if (location.href.match(/^file:/)) {
         document.getElementById('info').style.opacity = 1;
@@ -29,7 +28,238 @@
   var neuron;
   var mathbox;
   
-  DomReady.ready(function() {
+//  DomReady.ready(function() {
+//    ThreeBox.preload([
+//      'shaders/snippets.glsl.html',
+//    ], function () {
+//
+//      // MathBox boilerplate
+//        mathbox = window.mathbox = mathBox({
+//          cameraControls: true,
+//          cursor:         true,
+//          controlClass:   ThreeBox.OrbitControls,
+//          elementResize:  true,
+//          fullscreen:     true,
+//          screenshot:     true,
+//          stats:          false,
+//          scale:          1,
+//        }).start();
+//
+//        function arrayify(v) {
+//          return [v.x, v.y, v.z];
+//        }
+//      
+//      
+//        // Set up spline
+//      
+//     
+//      
+//
+//      var Points0Data = Points0.map(arrayify);
+//      var Points1Data = Points1.map(arrayify);
+//
+//      // Viewport camera/setup
+//      mathbox
+//        // Cartesian viewport
+//        .viewport({
+//          type: 'cartesian',
+//          range: [[-3, 3], [-3, 3], [-3, 3]], // x,y,z
+//          scale: [1, 1, 1],
+//        })
+//        .camera({
+//          orbit: 3.5,
+//          phi: τ/6,
+//          theta: 0.3,
+//        })
+//        .transition(300)
+//
+//        // Axes
+//        .axis({
+//          id: 'a',
+//          axis: 0,
+//          color: 0xa0a0a0,
+//          ticks: 5,
+//          lineWidth: 2,
+//          size: .05,
+//          labels: true,
+//        })
+//        .axis({
+//          id: 'b',
+//          axis: 1,
+//          color: 0xa0a0a0,
+//          ticks: 5,
+//          lineWidth: 2,
+//          size: .05,
+//          zero: false,
+//          labels: true,
+//        })
+//        .axis({
+//          id: 'c',
+//          axis: 2,
+//          color: 0xa0a0a0,
+//          ticks: 5,
+//          lineWidth: 2,
+//          size: .05,
+//          zero: false,
+//          labels: true,
+//        })
+//
+//        // Grid
+//        .grid({
+//          axis: [0, 2],
+//          color: 0xc0c0c0,
+//          lineWidth: 1,
+//        })
+//        
+//        .curve({
+//          id: 'class0',
+//          n: Points0Data.length,
+//          data: Points0Data,
+//          pointSize: 8,
+//          points: true,
+//          line: false,
+//          color: 0x0000ff
+//        })
+//        .curve({
+//          id: 'class1',
+//          n: Points1Data.length,
+//          data: Points1Data,
+//          pointSize: 8,
+//          points: true,
+//          line: false,
+//          color: 0x00ff00
+//        })
+//        .surface({
+//          shaded: true,
+//          domain: [[-1, 1], [-1, 1]],
+//          n: [60, 60],
+//          expression: surfaceFunc,
+//          opacity: .9, // Bugfix: for some reason, tangent attribute is gone when material.transparent = false
+//        })
+////        .surface({
+////          shaded: false,
+////          domain: [[-1, 1], [-1, 1]],
+////          n: [2, 2],
+////          expression: sliceFunc,
+////          color: 0x20C050,
+////          opacity: .5,
+////        });
+//        
+//
+////      // Move axis
+////      setTimeout(function () {
+////        
+////        mathbox.set('#c', { zero: true });
+////        mathbox.animate('#a', {
+////          offset: [0, 0, -1],
+////        }, { duration: 1500 });
+////        mathbox.animate('#b', {
+////          offset: [-3, 0, -1],
+////        }, { duration: 1500 });
+////        mathbox.animate('#c', {
+////          offset: [-3, 0, 0],
+////        }, { duration: 1500 });
+////      }, 1000);
+////
+////      // Move axis + grid
+////      setTimeout(function () {
+////        mathbox.set('#b', { labels: false, arrow: false });
+////        mathbox.axis({
+////          id: 'd',
+////          axis: 1,
+////          offset: [3, 0, -1],
+////          ticks: 5,
+////          lineWidth: 2,
+////          color: 0xa0a0a0,
+////          labels: true,
+////          arrow: false,
+////        });
+////        mathbox.axis({
+////          id: 'e',
+////          axis: 1,
+////          offset: [-3, 0, 1],
+////          ticks: 5,
+////          lineWidth: 2,
+////          arrow: false,
+////          color: 0xa0a0a0,
+////        });
+////        mathbox.axis({
+////          id: 'f',
+////          axis: 1,
+////          offset: [3, 0, 1],
+////          ticks: 5,
+////          lineWidth: 2,
+////          arrow: false,
+////          color: 0xa0a0a0,
+////        });
+////        mathbox.animate('grid', {
+////          offset: [0, -2, 0],
+////        }, { duration: 1500 });
+////        
+////        mathbox.grid({
+////          axis: [0, 2],
+////          ticks: [2, 1],
+////          offset: [0, 2, 0],
+////          color: 0xc0c0c0,
+////          lineWidth: 1,
+////        });
+////        mathbox.animate('camera', { orbit: 7, phi: τ*5/8 + .2 }, { duration: 2500 });
+////        mathbox.animate('#a', {
+////          offset: [0, -2, -1],
+////        }, { duration: 1500 });
+////        mathbox.animate('#c', {
+////          offset: [-3, -2, 0],
+////        }, { duration: 1500 });
+////
+////        mathbox.vector({
+////          color: 0x000000,
+////          n: 3,
+////          data: [[0, 0, 0], [1, 1, 1], [-1, -1, -1], [0, 1, .5],[0, 0, 0],[5, 1, 3]],
+////        });
+////        
+////      }, 2000);
+//
+//    });
+//  });
+  </script>
+  
+  
+<script type="text/javascript">
+    /**
+     * Custom helpers
+     */
+
+    // Clock that starts as soon as it is first called (per id).
+//    var clocks = {};
+//    window.clock = function (id) {
+//      if (!clocks[id]) clocks[id] = +new Date();
+//      return (+new Date() - clocks[id]) * .001;
+//    }
+    
+    var equation;
+    var p0 = 0;
+    var p1 = 0;
+    var p2 = 0;
+
+    // Arbitrary function
+    function surfaceFunc(x, y) {
+        return [x, y, p0*x + p1*y + p2];// y=
+//        return [x, Math.sqrt(-1*x*x-y*y +1 ), y];// z = y
+  //    return [x, 0.05*(3 + -1 + Math.cos(x*5) + Math.cos(y*5)), y];
+    }
+
+    // Horizontal slice
+//    function sliceFunc(x, y) {
+//      var t = clock(1);
+//      return Math.sin(t) * .75 ;
+//    }
+
+
+    function iframeMethod(){
+        
+        
+        
+        DomReady.ready(function() {
     ThreeBox.preload([
       'shaders/snippets.glsl.html',
     ], function () {
@@ -137,14 +367,14 @@
           expression: surfaceFunc,
           opacity: .9, // Bugfix: for some reason, tangent attribute is gone when material.transparent = false
         })
-        .surface({
-          shaded: false,
-          domain: [[-1, 1], [-1, 1]],
-          n: [2, 2],
-          expression: sliceFunc,
-          color: 0x20C050,
-          opacity: .5,
-        });
+//        .surface({
+//          shaded: false,
+//          domain: [[-1, 1], [-1, 1]],
+//          n: [2, 2],
+//          expression: sliceFunc,
+//          color: 0x20C050,
+//          opacity: .5,
+//        });
         
 
 //      // Move axis
@@ -222,72 +452,38 @@
 
     });
   });
-  </script>
-  
-  
-<script type="text/javascript">
-    /**
-     * Custom helpers
-     */
-
-    // Clock that starts as soon as it is first called (per id).
-    var clocks = {};
-    window.clock = function (id) {
-      if (!clocks[id]) clocks[id] = +new Date();
-      return (+new Date() - clocks[id]) * .001;
-    }
-    
-    var equation;
-    var p0 = 0;
-    var p1 = 0;
-    var p2 = 0;
-
-    // Arbitrary function
-    function surfaceFunc(x, y) {
-        return [x, p0*x + p1*y + p2, y];// z = y
-//        return [x, Math.sqrt(-1*x*x-y*y +1 ), y];// z = y
-  //    return [x, 0.05*(3 + -1 + Math.cos(x*5) + Math.cos(y*5)), y];
-    }
-
-    // Horizontal slice
-    function sliceFunc(x, y) {
-      var t = clock(1);
-      return Math.sin(t) * .75 ;
-    }
-    
-
-
-    function iframeMethod(){
+        
+        
         neuron = document.getElementById("catch").value;
         var w = neuron.weight[neuron.n];//最後的解
         //改平面參數
         p0 = -1 * w[1] / w[3];
         p1 = -1 * w[2] / w[3];
         p2 =      w[0] / w[3];
-        console.log(neuron.weight);
-        console.log(p0);
-        console.log(p1);
-        console.log(p2);
+        //console.log(neuron.weight);
+        //console.log(p0);
+        //console.log(p1);
+        //console.log(p2);
         //增加點
-        /*
+        
         for(var i = 0; i < neuron.test_data.length; i++){
             if(neuron.test_expecation[i] == neuron.expecationLabel[1])
                 Points0.push(new THREE.Vector3(neuron.test_data[i][0], neuron.test_data[i][1], neuron.test_data[i][2]));
             else
                 Points1.push(new THREE.Vector3(neuron.test_data[i][0], neuron.test_data[i][1], neuron.test_data[i][2]));            
         }
-        	*/
-           
+        	
+           /*
         for(var i = 0; i < neuron.data.length; i++){
          if(neuron.expecation[i] == neuron.expecationLabel[1])
              Points0.push(new THREE.Vector3(neuron.data[i][0], neuron.data[i][1], neuron.data[i][2]));
          else
              Points1.push(new THREE.Vector3(neuron.data[i][0], neuron.data[i][1], neuron.data[i][2]));            
-        }
+        }*/
         Points0Data = Points0.map(arrayify);
         Points1Data = Points1.map(arrayify);
-        console.log(Points0);
-        console.log(Points1);
+        //console.log(Points0);
+        //console.log(Points1);
         
         mathbox.curve({
           id: 'class0',

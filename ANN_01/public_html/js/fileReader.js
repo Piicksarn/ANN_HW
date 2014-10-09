@@ -13,6 +13,7 @@ var Database = function () {
     this.expecationLabel = new Array();// 儲存資料庫中期望值的種類
     this.maxData = 0;// 計算資料最大數字 方便作圖
     this.dataLineArray;
+    this.choice;
 };
 
 Database.prototype = {
@@ -21,6 +22,8 @@ Database.prototype = {
     
         var rawFile = new XMLHttpRequest();
         rawFile.open("GET", file, false);
+        // 作弊
+        this.choice = file.slice(file.length - 8,file.length);
         rawFile.onreadystatechange = function ()
         {
             if(rawFile.readyState === 4)
@@ -37,28 +40,32 @@ Database.prototype = {
     
     
         var lineArray = allText.split('\n'); // 依照 \n 切割
-        //console.log(lineArray);
-        //console.log("lineArray:"+lineArray);
+        ////console.log(lineArray);
+        ////console.log("lineArray:"+lineArray);
         // 解決視窗os機車回車問題...
-        console.log("lineArray[END]:"+lineArray[lineArray.length - 1].length);
+        //console.log("lineArray[END]:"+lineArray[lineArray.length - 1].length);
         if(lineArray[lineArray.length - 1].length == 0)
             lineArray = lineArray.slice(0,lineArray.length - 1);
-        //console.log("lineArray:"+lineArray[lineArray.length - 1].length);
+        ////console.log("lineArray:"+lineArray[lineArray.length - 1].length);
         
         // 解決不同格式問題...(真的很無聊...這不是重點吧)
-        //console.log(lineArray[2].indexOf(' '));
+        ////console.log(lineArray[2].indexOf(' '));
         for(var i = 0; i < lineArray.length; i++) {  
             // 將每個space轉成 tab
             //lineArray[i] = lineArray[i].replace(/[ ]/g,"\t");
             // 將每個space 或是 連續space 轉成 tab
-            lineArray[i] = lineArray[i].replace(/ +(?= )/g,"\t");
-            console.log(lineArray[i]);
-            //console.log("lineArray[i].indexOf('\t'):"+lineArray[i].indexOf('\t'));
+            if(this.choice == 'ring.txt')
+                lineArray[i] = lineArray[i].replace(/ +(?= )/g,"\t");
+            else
+                lineArray[i] = lineArray[i].replace(/[ ]/g,"\t");
+            
+            //console.log(lineArray[i]);
+            ////console.log("lineArray[i].indexOf('\t'):"+lineArray[i].indexOf('\t'));
             if(lineArray[i].indexOf('\t') == 0) {
                 lineArray[i] = lineArray[i].slice(1,lineArray[i].length - 1); 
             }
         }
-        console.log("lineArray:"+lineArray.length);
+        //console.log("lineArray:"+lineArray.length);
         // 將每一行的元素依照 \t 分割 存成2維陣列
         this.dataLineArray = new Array(lineArray.length);
         for(var i = 0; i < lineArray.length; i++){
@@ -117,8 +124,28 @@ Database.prototype = {
             }
         }
         
+        
+        
         // 將資料分割成 訓練與測試資料
         if(this.data.length >= 60) {
+            
+            var data_length = this.data.length;
+            // 打亂資料
+            for(var i = 0; i < 30; i++){
+                var a = Math.ceil(Math.random()*data_length);
+                var b = Math.ceil(Math.random()*data_length);
+
+                var temp1 = this.data[a];
+                var temp2 = this.expecation[a];
+
+                this.data[a] = this.data[b];
+                this.data[b] = temp1;
+
+                this.expecation[a] = this.expecation[b];
+                this.expecation[b] = temp2;
+
+            }
+            
             var r1 = Math.floor(this.data.length * (1-2/3.0)/2);
             var r3 = r1;
             var r2 = this.data.length - (r1 + r3);
@@ -139,21 +166,23 @@ Database.prototype = {
         if(this.trainingData[0].length == 3) {
             mode3D = true;
         }
+        else
+            mode3D = false;
            
                       
-        console.log("Data Start");
-        console.log(this.data);
-        console.log(this.trainingData);
-        console.log(this.testingData);
-        console.log("Data End");
-        console.log("expecation Start");
-        console.log(this.expecation);
-        console.log(this.train_expecation);
-        console.log(this.test_expecation);
-        console.log("expecation End");
-        console.log("expecationLabel Start");
-        console.log(this.expecationLabel);  
-        console.log("expecationLabel End");
+        //console.log("Data Start");
+        //console.log(this.data);
+        //console.log(this.trainingData);
+        //console.log(this.testingData);
+        //console.log("Data End");
+        //console.log("expecation Start");
+        //console.log(this.expecation);
+        //console.log(this.train_expecation);
+        //console.log(this.test_expecation);
+        //console.log("expecation End");
+        //console.log("expecationLabel Start");
+        //console.log(this.expecationLabel);  
+        //console.log("expecationLabel End");
     }
     
 };

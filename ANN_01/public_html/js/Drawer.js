@@ -22,7 +22,7 @@ Drawer.prototype = {
         if(this.data.trainingData[0].length == 2) {// 沒時間了..暫時先用最笨方案
             switch(c){
                 case 0:
-                console.log("data length:"+this.data.data.length);
+                //console.log("data length:"+this.data.data.length);
 
                 for (var i = 0; i < this.data.trainingData.length; i++){
                     if(this.data.train_expecation[i] == neuron.expecationLabel[1])
@@ -33,8 +33,8 @@ Drawer.prototype = {
                 break;
 
                 case 1:
-                console.log("data length:"+this.data.testingData.length);
-                console.log(this.data.test_expecation);
+                //console.log("data length:"+this.data.testingData.length);
+                //console.log(this.data.test_expecation);
                 for (var i = 0; i < this.data.testingData.length; i++){
                     if(this.data.test_expecation[i] == neuron.expecationLabel[1])
                         this.board.create('point', this.data.testingData[i],{name:'',color:'#0000ff'});        

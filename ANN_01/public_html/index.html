@@ -23,6 +23,23 @@ and open the template in the editor.
             filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#7B7B7B, endColorstr=#272727, GradientType=0);
             }
             
+            /*            resize iframe*/
+            #wrapper { width: 200%; height: 90%; padding: 0; overflow: hidden; }
+            #scaled-frame { width: 200px; height: 100%; border: 0px; }
+            #scaled-frame {
+                zoom: 0.50;
+                -moz-transform: scale(0.50);
+                -moz-transform-origin: 0 0;
+                -o-transform: scale(0.50);
+                -o-transform-origin: 0 0;
+                -webkit-transform: scale(0.50);
+                -webkit-transform-origin: 0 0;
+            }
+
+            @media screen and (-webkit-min-device-pixel-ratio:0) {
+             #scaled-frame  { zoom: 1;  }
+}
+            
         </style>
 
         <script src="js/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -33,11 +50,6 @@ and open the template in the editor.
         <script type="text/javascript" src="js/libs/mathjax/MathJax.js?config=TeX-AMS_HTML-full"></script>
         <script type="text/javascript" src="js/libs/bootstrap/bootstrap-progressbar.js"></script>
         
-        <script type="text/javascript" src='js/libs/webgl_surface_plot/SurfacePlot.js'></script>
-        <script type="text/javascript" src='js/libs/webgl_surface_plot/ColourGradient.js'></script>
-        <script type="text/javascript" src="js/libs/webgl_surface_plot/glMatrix-0.9.5.min.js"></script>
-        <script type="text/javascript" src="js/libs/webgl_surface_plot/webgl-utils.js"></script>
-        <script type="text/javascript" src="js/libs/webgl_surface_plot/parser.js"></script>
         <!--<script src="js/libs/bootstrap/bootstrap-switch.js"></script>-->
         
         
@@ -102,7 +114,8 @@ and open the template in the editor.
                     $pb = $('#h-fill-basic .progress-bar');
                     $pb.attr('data-transitiongoal', Math.floor(neuron.n / (neuron.true_loop_times/100))); // 做一下正規化
                     $pb.progressbar({display_text: 'fill'});
-                    console.log($('#h-fill-basic .progress-bar').attr('data-transitiongoal'));
+                    //console.log($('#h-fill-basic .progress-bar').attr('data-transitiongoal'));
+                    
                 }
             };
 
@@ -246,15 +259,17 @@ and open the template in the editor.
               <div class="drawer-brand">
                 <h3 style="color:white">Over 2-D, 2-Class</h3>
               </div>
+              <!--
               <li><a onclick="init(14);">2Circle2(2D 3Class)</a></li>
               <li><a onclick="init(15);">8OX(8D 3Class)</a></li>
               <li><a onclick="init(16);">C10D(10D 4Class)</a></li>
               <li><a onclick="init(17);">C3D(3D 4Class)</a></li>
               <li><a onclick="init(18);">IRIS(4D 3Class)</a></li>
-              <li><a onclick="init(19);">wine(13D 3Class)</a></li>
+              <li><a onclick="init(19);">wine(13D 3Class)</a></li>-->
               <li><a onclick="init(20);">感知機3(3D 2Class)</a></li>
+              <!--
               <li><a onclick="init(21);">感知機4(2D 3Class)</a></li>
-              <li><a onclick="init(22);">衛星6類_4維(4D 6Class)</a></li>
+              <li><a onclick="init(22);">衛星6類_4維(4D 6Class)</a></li>-->
               <li></li>
             </ul>
           </nav>
@@ -265,12 +280,16 @@ and open the template in the editor.
                 <div class="container">
                     <hr/>
                     <div id="jxgbox" class="jxgbox" style="width:90%; height:width; margin: 0 auto; "></div>
-                    <iframe src="result3D.html" id="iframe" name="iframe" style="width:90%; height:90%; margin: 0 auto; display: none;">
-                        Iframe not supported..... change your browser...
+                    <div id="wrapper" style="width:90%; height:width; margin: 0 auto;">
+                    
+                    <iframe src="result3D.html" id="iframe" name="iframe" style="width:90%; height:100%; margin: 0 auto; display: none;">
+                        Iframe not supported..... change your worse browser...
                     </iframe>
-                    <div id="testt"></div>
+                    </div>
                     <script type="text/javascript">
                         ResizeCanvas();//讓高與寬相同 設 %為了給手機囉！
+                        //ar ifr = document.getElementById("iframe");
+                        //ifr.parentNode.removeChild(ifr);    
                     </script>
                     <hr/>
                     <div id="user_control" style="display: none;">
@@ -326,14 +345,14 @@ and open the template in the editor.
                                             $('#iframe').css('display','block');
                                             var ifrmae = document.getElementById('iframe');
                                             ifrmae.contentDocument.getElementById("catch").value = neuron;
-                                            console.log(ifrmae.contentDocument.getElementById("catch").value);
+                                            //console.log(ifrmae.contentDocument.getElementById("catch").value);
                                         });
                                         
                                         
                                         $('#play').click(function() {
                                             if($('#play').val() == 'Play') {
                                                 $('#function').html('');
-                                                console.log("play click");
+                                                //console.log("play click");
                                                 neuron.auto_control = true;
                                                 neuron.startAnimation();
                                                 $('#pause').attr("disabled", false);
@@ -358,7 +377,7 @@ and open the template in the editor.
                                                 
                                             }
                                             else {
-                                                console.log("stop click");
+                                                //console.log("stop click");
                                                 neuron.stopAnimation();
                                                 $('#pause').attr("disabled", true);
                                                 $('#play').val("Play");
@@ -379,7 +398,7 @@ and open the template in the editor.
                                             $('#play').val("Play");
                                             $('#play').text('Play').button("refresh");
                                             AnimationStatus = Status.Pause;
-                                            // 啟動測試按鈕
+                                            // 啟動測試按鈕 
                                             if(mode3D){
                                                 $('#test3d_auto').show();
                                             }
@@ -392,14 +411,19 @@ and open the template in the editor.
                                         });
                                         $('#test3d_auto').click(function() { 
                                             //window.open("result3D.html");
-                                            
+                    //                                            var ifr = document.getElementById("canvas_container");
+                    //                                            var iframe = document.createElement("iframe");
+                    //                                            iframe.src = "result3D.html"; 
+                    //                                             iframe.setAttribute("id", "iframe");
+                    //                                            iframe.setAttribute("name", "iframe");
+                    //                                            ifr.appendChild(iframe);   
                                             //window.location.href = "Axis.html";
                                             $('#jxgbox').css('display','none');
                                             $('#iframe').css('display','block');
                                             var iframe = document.getElementById('iframe');
                                             iframe.contentDocument.getElementById("catch").value = neuron;
-                                            console.log(iframe.contentDocument.getElementById("catch").value.n);
                                             document.iframe.iframeMethod(); 
+                                            mode3D_exec = true;
                                         });
                                         $('#h-fill-basic-reset').click(function() {
                                             $('#h-fill-basic .progress-bar').attr('data-transitiongoal', 0).progressbar({display_text: 'fill'});
@@ -654,11 +678,32 @@ and open the template in the editor.
 
                 database = new Database();   
                 database.readTextFile(path);
+                $('#jxgbox').css('display','block');
+                $('#iframe').css('display','none');
+                
+//                $('#test3d_auto').hide();
+//                $('#test_auto').show();
+//                $('#test3d_hide').hide();
+//                $('#test_hide').show();
+                
+                
+                
+//                if(mode3D_exec) {
+//                    var iframe = document.getElementById('iframe');
+//                    iframe.src = "http://www.google.com";
+//                    iframe.contentWindow.location.reload();
+//                     
+//                }
+
                 
                 if(enableAnimation)
                     neuron = new Neuron(database,$("#learning_rate").val(),$("#learning_times").val(),$("#fps").val());
                 else // 不開動畫就加速
                     neuron = new Neuron(database,$("#learning_rate").val(),$("#learning_times").val(),10000);
+                
+                neuron.stopAnimation();
+                AnimationStatus = Status.Stop;
+                disableControler(false); // 開啟使用者設定
                 closeDrawer();
             }
             else{

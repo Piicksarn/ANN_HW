@@ -10,7 +10,8 @@ var dataSegmentation = 2/3; // 訓練資料佔比
 
 var AnimationStatus = 0;
 var mode3D = false;// 話說3d 只有兩個檔..
-console.log("AnimationStatus");
+var mode3D_exec = false;
+//console.log("AnimationStatus");
 if(typeof Status == "undefined") {
     var Status = {};
     Status.Stop = 0;
